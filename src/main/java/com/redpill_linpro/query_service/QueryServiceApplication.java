@@ -8,7 +8,7 @@ public class QueryServiceApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(QueryServiceApplication.class, args);
-		System.out.println("hello world");
+		System.out.println("Hello World!");
 	}
 
 }
