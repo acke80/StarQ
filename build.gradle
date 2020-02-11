@@ -26,6 +26,9 @@ dependencies {
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
+
+	// http://mvnrepository.com/artifact/org.apache.jena/jena-arq
+	compile group: 'org.apache.jena', name: 'jena-arq', version: '3.14.0'
 }
 
 test {
