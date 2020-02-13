@@ -10,11 +10,9 @@ import java.io.IOException;
 public class SPARQLFileHandler {
 
     private String dir;
-    private StringBuilder stringBuilder;
 
     public SPARQLFileHandler(String dir){
         this.dir = dir;
-        stringBuilder = new StringBuilder();
     }
 
     public String getFileData(){

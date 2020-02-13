@@ -29,6 +29,9 @@ dependencies {
 
 	// http://mvnrepository.com/artifact/org.apache.jena/jena-arq
 	compile group: 'org.apache.jena', name: 'jena-arq', version: '3.14.0'
+
+	// https://search.maven.org/artifact/edu.stanford.nlp/stanford-corenlp/3.9.2/jar
+	implementation 'edu.stanford.nlp:stanford-corenlp:3.9.2'
 }
 
 test {
