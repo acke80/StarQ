@@ -4,11 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class QueryHandler {
-    SPARQLFileHandler file;
-    List<String> prefixes = new ArrayList<String>();
+    private SparqlFileHandler file;
+    private String query;
 
-    public QueryHandler(SPARQLFileHandler file){
+
+    public QueryHandler(SparqlFileHandler file){
         this.file = file;
-        System.out.println(file.getFileData());
+        this.query = this.file.getFileData();
     }
+
+    public QueryHandler(String query){
+        this(new SparqlFileHandler(""));
+
+    }
+
 }

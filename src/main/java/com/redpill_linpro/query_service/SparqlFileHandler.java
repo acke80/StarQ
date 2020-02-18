@@ -4,14 +4,12 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-/*
-* Used to import SPARQL code from file to string
-*/
-public class SPARQLFileHandler {
+
+public class SparqlFileHandler {
 
     private String dir;
 
-    public SPARQLFileHandler(String dir){
+    public SparqlFileHandler(String dir){
         this.dir = dir;
     }
 
@@ -23,6 +21,10 @@ public class SPARQLFileHandler {
             e.printStackTrace();
         }
         return data;
+    }
+
+    private void writeFileData(){
+
     }
 
     private String readFileData() throws IOException {

@@ -8,7 +8,8 @@ public class QueryServiceApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(QueryServiceApplication.class, args);
-		QueryParser.ParseSPARQL(QueryParser.sf);
+		System.out.println("\n Start Successful \n");
+
 	}
 
 }
