@@ -3,6 +3,7 @@ package com.redpill_linpro.query_service;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.socket.BinaryMessage;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -28,15 +29,21 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status){
-        sessionMapper.remove(session);
+        closeSession(session);
     }
 
     @Override
-    public void handleTextMessage(WebSocketSession session, TextMessage message) throws JSONException, IOException {
+    public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         String payload = (String) new JSONObject(message.getPayload()).get("query");
         System.out.println(payload);
-        session.sendMessage(message);
-        sessionMapper.get(session).sendQuery(payload);
+
+        List<String> bindings = new ArrayList<>(sessionMapper.get(session).sendQuery(payload));
+        for(String bind : bindings)
+            session.sendMessage(new TextMessage(bind));
+    }
+
+    private static void closeSession(WebSocketSession session){
+        sessionMapper.remove(session);
     }
 }
 

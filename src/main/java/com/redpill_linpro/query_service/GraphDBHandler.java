@@ -5,28 +5,39 @@ import org.eclipse.rdf4j.query.*;
 import org.eclipse.rdf4j.repository.http.HTTPRepository;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GraphDBHandler {
     private RepositoryConnection connection;
 
 
-    public GraphDBHandler() {
-        connectRepository();
-    }
+    public GraphDBHandler() { }
 
-    public void sendQuery(String query) {
-        TupleQuery tupleQuery = connection.prepareTupleQuery(QueryLanguage.SPARQL, query);
+    public List<String> sendQuery(String query) throws Exception{
+        List<String> bindings = new ArrayList<>();
 
-        TupleQueryResult tupleQueryResult = tupleQuery.evaluate();
-        while (tupleQueryResult.hasNext()) {
-            BindingSet bindingSet = tupleQueryResult.next();
+        try {
+            connectRepository();
 
-            for (Binding binding : bindingSet) {
-                String name = binding.getName();
-                Value value = binding.getValue();
+            TupleQuery tupleQuery = connection.prepareTupleQuery(QueryLanguage.SPARQL, query);
 
-                System.out.println(name + " = " + value);
+            TupleQueryResult tupleQueryResult = tupleQuery.evaluate();
+            while (tupleQueryResult.hasNext()) {
+                BindingSet bindingSet = tupleQueryResult.next();
+
+                for (Binding binding : bindingSet) {
+                    String name = binding.getName();
+                    Value value = binding.getValue();
+
+                    bindings.add(name + " = " + value);
+                }
             }
+        }finally{
+            connection.close();
         }
+
+        return bindings;
     }
 
     private void connectRepository(){
