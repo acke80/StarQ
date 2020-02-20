@@ -8,7 +8,10 @@ function setConnected(connected) {
 }
 
 function connect() {
-	webSocket = new WebSocket('ws://localhost:8989/query');
+	webSocket = new WebSocket('ws://localhost:8080/query');
+    webSocket.onmessage = function(data) {
+    		respond(data.data);
+    	}
 	setConnected(true);
 }
 
@@ -24,11 +27,11 @@ function sendData() {
 		'query' : $("#query").val()
 	})
 	webSocket.send(data);
-	respond($("#query").val().replace(/\n/g, "<br />"));
+	//respond($("#query").val());
 }
 
-function respond(text){
-    $("#response").html(text);
+function respond(data){
+    $("#response").html(data).replace(/\n/g, "<br />");
 }
 
 $(function() {
