@@ -31,7 +31,7 @@ function sendData() {
 }
 
 function respond(data){
-    $("#response").html(data).replace(/\n/g, "<br />");
+    $(".bindings").append("<br> <p>" + data + "</p>")
 }
 
 $(function() {
