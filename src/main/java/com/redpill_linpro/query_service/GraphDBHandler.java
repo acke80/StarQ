@@ -8,11 +8,12 @@ import org.eclipse.rdf4j.repository.RepositoryConnection;
 public class GraphDBHandler {
     private RepositoryConnection connection;
 
+
     public GraphDBHandler() {
-        connectRepository("http://localhost:7200/repositories/LearningGraphDB");
+        connectRepository();
     }
 
-    private void sendQuery(String query) {
+    public void sendQuery(String query) {
         TupleQuery tupleQuery = connection.prepareTupleQuery(QueryLanguage.SPARQL, query);
 
         TupleQueryResult tupleQueryResult = tupleQuery.evaluate();
@@ -28,8 +29,8 @@ public class GraphDBHandler {
         }
     }
 
-    private void connectRepository(String repo){
-        HTTPRepository repository = new HTTPRepository(repo);
+    private void connectRepository(){
+        HTTPRepository repository = new HTTPRepository("http://localhost:7200/repositories/LearningGraphDB");
         connection = repository.getConnection();
     }
 }
