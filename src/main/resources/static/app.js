@@ -27,11 +27,11 @@ function sendData() {
 		'query' : $("#query").val()
 	})
 	webSocket.send(data);
-	//respond($("#query").val());
+	$(".bindings").html("")
 }
 
 function respond(data){
-    $(".bindings").append("<br> <p>" + data + "</p>")
+    $(".bindings").append("<br>" + data)
 }
 
 $(function() {

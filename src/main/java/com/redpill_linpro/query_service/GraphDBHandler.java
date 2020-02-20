@@ -31,6 +31,7 @@ public class GraphDBHandler {
                     Value value = binding.getValue();
 
                     bindings.add(name + " = " + value);
+                    System.out.println(name + " = " + value);
                 }
             }
         }finally{

@@ -1,9 +1,8 @@
-PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-SELECT ?name
-       ?email
-WHERE
-  {
-    ?person  a          foaf:Person .
-    ?person  foaf:name  ?name .
-    ?person  foaf:mbox  ?email .
-  }
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX voc: <https://swapi.co/vocabulary/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+select * where {
+    ?film a voc:Film ;
+        rdfs:label ?title
+}
