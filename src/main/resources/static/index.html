@@ -2,24 +2,58 @@
 <html>
 
 <head>
-    <title>Query Service</title>
+    <title>Query Sercice</title>
+    <h1 style="text-align:center;">Query Service</h1>
     <script src="/webjars/jquery/jquery.min.js"></script>
     <script src="/app.js"></script>
+
+    <style>
+        button {
+            padding: 10px;
+            margin-top: 10px;
+            color: darkblue;
+        }
+
+        table, th {
+            border: 1px solid black;
+        }
+
+        #query {
+            width: 400px;
+            height: 300px;
+        }
+
+        #queryArea, #buttons, #bindings {
+            display: inline-block;
+            vertical-align: top;
+        }
+
+        div.bindings {
+            width: 400px;
+            height: 300px;
+            border: 1px solid black;
+            overflow-y: scroll;
+        }
+    </style>
 </head>
 <body>
 
-    <label for="connect">Query Service</label>
-    <button id="connect" type="button">Connect</button>
+    <div id="buttons">
+        <button id="connect" type="button">Connect</button>
+        <br>
+        <button id="disconnect" type="button" disabled="disabled">Disconnect</button>
+        <br>
+        <button id="send" disabled="disabled" type="submit" onclick="createTable()">Send</button>
+        <br>
+    </div>
+    <div id="queryArea">
+        <textarea id="query" placeholder="Type query here"></textarea>
+    </div>
+    <div id="bindings">
+        <div class="bindings"></div>
+    </div>
 
-    <button id="disconnect" type="button" disabled="disabled">Disconnect</button>
-
-
-    <textarea id="query" rows="20" cols="40" placeholder="Type query here" required></textarea>
-
-    <button id="send" disabled="disabled" type="submit">Send</button>
-
-    <h4 id="response" ></h4>
-    <div class="bindings"></div>
+    <h4 class="response"></h4>
 
 </body>
 </html>
