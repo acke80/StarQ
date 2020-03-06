@@ -1,3 +1,5 @@
+//TODO: tests for NL -> SPARQL
+
 package com.redpill_linpro.query_service;
 
 import org.junit.jupiter.api.Test;

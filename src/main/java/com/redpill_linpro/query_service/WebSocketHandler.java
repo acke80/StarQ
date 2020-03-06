@@ -1,9 +1,7 @@
 package com.redpill_linpro.query_service;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.socket.BinaryMessage;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -18,13 +16,13 @@ import java.util.List;
 @Controller
 public class WebSocketHandler extends TextWebSocketHandler {
 
-    private static HashMap<WebSocketSession, GraphDBHandler>
+    private static HashMap<WebSocketSession, RepositoryHandler>
                     sessionMapper = new HashMap<>();
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws IOException {
         session.sendMessage(new TextMessage("Hello!"));
-        sessionMapper.put(session, new GraphDBHandler());
+        sessionMapper.put(session, new RepositoryHandler());
     }
 
     @Override
@@ -35,11 +33,12 @@ public class WebSocketHandler extends TextWebSocketHandler {
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         String payload = (String) new JSONObject(message.getPayload()).get("query");
-        System.out.println(payload);
 
-        List<String> bindings = new ArrayList<>(sessionMapper.get(session).sendQuery(payload));
+        /*List<String> bindings = new ArrayList<>(sessionMapper.get(session).sendQuery(payload));
         for(String bind : bindings)
             session.sendMessage(new TextMessage(bind));
+
+         */
     }
 
     private static void closeSession(WebSocketSession session){

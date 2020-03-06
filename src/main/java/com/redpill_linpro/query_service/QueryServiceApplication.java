@@ -7,9 +7,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class QueryServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(QueryServiceApplication.class, args);
+		//SpringApplication.run(QueryServiceApplication.class, args);
 		System.out.println("\n Start Successful \n");
-
+		QueryParser qp = new QueryParser("What is the second tallest mountain in France?");
 	}
-
 }

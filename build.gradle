@@ -41,12 +41,14 @@ dependencies {
 	implementation 'org.apache.jena:jena-iri:3.10.0'
 	implementation 'org.codehaus.jackson:jackson-mapper-asl:1.9.13'
 
+	implementation 'org.eclipse.rdf4j:rdf4j-storage:3.1.0'
+	implementation 'org.eclipse.rdf4j:rdf4j-tools-federation:3.1.0'
 	implementation 'org.eclipse.rdf4j:rdf4j-repository-http'
 	// https://mvnrepository.com/artifact/com.ontotext.graphdb/graphdb-free-runtime
 	compile group: 'com.ontotext.graphdb', name: 'graphdb-free-runtime', version: '9.1.1'
-
-	// https://search.maven.org/artifact/edu.stanford.nlp/stanford-corenlp/3.9.2/jar
-	implementation 'edu.stanford.nlp:stanford-corenlp:3.9.2'
+	
+	compile group: 'edu.stanford.nlp', name: 'stanford-corenlp', version: '3.9.2'
+	compile group: 'edu.stanford.nlp', name: 'stanford-corenlp', version: '3.9.2', classifier: 'models'
 }
 
 test {
