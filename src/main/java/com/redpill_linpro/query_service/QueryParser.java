@@ -8,13 +8,14 @@ import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.simple.Sentence;
 import edu.stanford.nlp.util.CoreMap;
-import edu.stanford.nlp.util.Quadruple;
 
 import java.util.*;
 
 public class QueryParser {
 
     private HashMap<List<CoreLabel>, Collection<RelationTriple>> naturalParseMap;
+
+    private List<String> sparqlQueries;
 
     private String question;
     private String statement;
@@ -25,7 +26,12 @@ public class QueryParser {
         this.question = question;
 
         initPipeline();
-        generateStatements();
+
+        try{
+            generateStatements();
+        } catch (ArrayIndexOutOfBoundsException e){
+            System.err.println("Question could not be translated to Statement");
+        }
 
         System.out.println("\nStatement: " + statement);
         System.out.println("Triples: ");
@@ -35,6 +41,7 @@ public class QueryParser {
                 System.out.println(rt.subjectGloss() + " - " + rt.relationGloss() + " - " + rt.objectGloss());
         }
 
+        sparqlQueries = generateSparql();
     }
 
     /** Initialize the CoreNLP Pipeline and annotate the
@@ -49,7 +56,7 @@ public class QueryParser {
 
     /** Convert questions from the annotated document to statements.
      * The Questions must end with a '?' for translator to work. */
-    private void generateStatements(){
+    private void generateStatements() throws ArrayIndexOutOfBoundsException{
         QuestionToStatementTranslator qtst = new QuestionToStatementTranslator();
         naturalParseMap = new HashMap<>();
 
@@ -69,6 +76,26 @@ public class QueryParser {
 
         return new Sentence(statement).openieTriples();
 
+    }
+
+    private List<String> generateSparql(){
+        return null;
+    }
+
+    public HashMap<List<CoreLabel>, Collection<RelationTriple>> getNaturalParseMap() {
+        return naturalParseMap;
+    }
+
+    public List<String> getSparqlQueries() {
+        return sparqlQueries;
+    }
+
+    public String getQuestion() {
+        return question;
+    }
+
+    public String getStatement() {
+        return statement;
     }
 
 }
