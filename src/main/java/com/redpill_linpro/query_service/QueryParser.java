@@ -10,16 +10,14 @@ import edu.stanford.nlp.simple.Sentence;
 import edu.stanford.nlp.util.CoreMap;
 import edu.stanford.nlp.util.Quadruple;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 public class QueryParser {
 
-    private List<List<CoreLabel>> coreLabelsList;
+    private HashMap<List<CoreLabel>, Collection<RelationTriple>> naturalParseMap;
 
     private String question;
+    private String statement;
 
     private Annotation document;
 
@@ -29,8 +27,13 @@ public class QueryParser {
         initPipeline();
         generateStatements();
 
-        for (List<CoreLabel> coreLabels : coreLabelsList)
-            generateTriples(coreLabels);
+        System.out.println("\nStatement: " + statement);
+        System.out.println("Triples: ");
+
+        for(Collection<RelationTriple> crt : naturalParseMap.values()){
+            for(RelationTriple rt : crt)
+                System.out.println(rt.subjectGloss() + " - " + rt.relationGloss() + " - " + rt.objectGloss());
+        }
 
     }
 
@@ -48,35 +51,23 @@ public class QueryParser {
      * The Questions must end with a '?' for translator to work. */
     private void generateStatements(){
         QuestionToStatementTranslator qtst = new QuestionToStatementTranslator();
-        coreLabelsList = new ArrayList<>();
+        naturalParseMap = new HashMap<>();
 
         for (CoreMap sentence : document.get(CoreAnnotations.SentencesAnnotation.class)) {
             List<List<CoreLabel>> coreLabelsSingletonList = qtst.toStatement(sentence.get(CoreAnnotations.TokensAnnotation.class));
-            coreLabelsList.add(coreLabelsSingletonList.get(0));
+            naturalParseMap.put(coreLabelsSingletonList.get(0), generateTriples(coreLabelsSingletonList.get(0)));
         }
     }
 
     /** Generate Triples from the Statements. */
-    private void generateTriples(List<CoreLabel> coreLabels){
+    private Collection<RelationTriple> generateTriples(List<CoreLabel> coreLabels){
         StringBuilder sb = new StringBuilder();
         for (CoreLabel coreLabel : coreLabels){
-            /*if(coreLabel.word().contains("of"))
-                sb.append("in").append(" ");
-            else*/
-                sb.append(coreLabel.lemma()).append(" ");
+            sb.append(coreLabel.lemma()).append(" ");
         }
-        String statement = sb.toString();
+        statement = sb.toString();
 
-        Collection<Quadruple<String, String, String, Double>> triples = new Sentence(statement).openie();
-
-        System.out.println("\nStatement: " + statement);
-        System.out.println("Triples: ");
-
-
-        for(Quadruple<String, String, String, Double> rt : triples){
-            System.out.println(rt.first + " - " + rt.second + " - " + rt.third);
-        }
-
+        return new Sentence(statement).openieTriples();
 
     }
 
