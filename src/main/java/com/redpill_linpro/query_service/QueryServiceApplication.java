@@ -9,6 +9,6 @@ public class QueryServiceApplication {
 	public static void main(String[] args) {
 		//SpringApplication.run(QueryServiceApplication.class, args);
 		System.out.println("\n Start Successful \n");
-		QueryParser qp = new QueryParser("");
+		QueryParser qp = new QueryParser("What is temperature of truck-001?");
 	}
 }

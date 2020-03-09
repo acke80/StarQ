@@ -8,6 +8,25 @@ import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.simple.Sentence;
 import edu.stanford.nlp.util.CoreMap;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Node_Literal;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryFactory;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.OpAsQuery;
+import org.apache.jena.sparql.algebra.op.OpBGP;
+import org.apache.jena.sparql.algebra.op.OpFilter;
+import org.apache.jena.sparql.algebra.op.OpProject;
+import org.apache.jena.sparql.core.BasicPattern;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.expr.E_LessThan;
+import org.apache.jena.sparql.expr.Expr;
+import org.apache.jena.sparql.expr.ExprVar;
+import org.apache.jena.sparql.expr.nodevalue.NodeValueInteger;
+import org.apache.jena.sparql.syntax.ElementFilter;
+import org.apache.jena.sparql.syntax.ElementGroup;
+import org.apache.jena.sparql.syntax.ElementTriplesBlock;
 
 import java.util.*;
 
@@ -18,12 +37,13 @@ public class QueryParser {
     private List<String> sparqlQueries;
 
     private String question;
-    private String statement;
+    private List<String> statements;
 
     private Annotation document;
 
     public QueryParser(String question){
         this.question = question;
+        statements = new ArrayList<>();
 
         initPipeline();
 
@@ -33,15 +53,21 @@ public class QueryParser {
             System.err.println("Question could not be translated to Statement");
         }
 
-        System.out.println("\nStatement: " + statement);
-        System.out.println("Triples: ");
+        sparqlQueries = generateSparql();
 
+        int i = 0;
         for(Collection<RelationTriple> crt : naturalParseMap.values()){
-            for(RelationTriple rt : crt)
+            System.out.println("Statement: " + statements.get(i));
+            System.out.println("\nTriples: ");
+            for(RelationTriple rt : crt){
                 System.out.println(rt.subjectGloss() + " - " + rt.relationGloss() + " - " + rt.objectGloss());
+            }
+            System.out.println("\nSparql Query: \n" + sparqlQueries.get(i));
+            System.out.println("____________________________________________");
+            i++;
         }
 
-        sparqlQueries = generateSparql();
+
     }
 
     /** Initialize the CoreNLP Pipeline and annotate the
@@ -72,14 +98,37 @@ public class QueryParser {
         for (CoreLabel coreLabel : coreLabels){
             sb.append(coreLabel.lemma()).append(" ");
         }
-        statement = sb.toString();
-
-        return new Sentence(statement).openieTriples();
-
+        statements.add(sb.toString());
+        return new Sentence(sb.toString()).openieTriples();
     }
 
+    /** Generate a Sparql Query for each sentence
+     * in the document. */
     private List<String> generateSparql(){
-        return null;
+        List<String> queries = new ArrayList<>();
+
+        for(Collection<RelationTriple> crt : naturalParseMap.values()) {
+            ElementTriplesBlock block = new ElementTriplesBlock();
+
+            for (RelationTriple rt : crt)
+                block.addTriple(
+                        Triple.create(
+                                Var.alloc(rt.subjectLemmaGloss()),
+                                Var.alloc(rt.relationLemmaGloss()),
+                                Var.alloc(rt.objectLemmaGloss())));
+
+            ElementGroup body = new ElementGroup();
+            body.addElement(block);
+
+            Query q = QueryFactory.make();
+            q.setQueryPattern(body);
+            q.setQuerySelectType();
+            q.addResultVar(Var.ANON);
+
+            queries.add(q.toString());
+        }
+
+        return queries;
     }
 
     public HashMap<List<CoreLabel>, Collection<RelationTriple>> getNaturalParseMap() {
@@ -94,8 +143,8 @@ public class QueryParser {
         return question;
     }
 
-    public String getStatement() {
-        return statement;
+    public List<String> getStatements() {
+        return statements;
     }
 
 }
