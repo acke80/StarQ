@@ -119,8 +119,7 @@ public class QueryParser {
 
             ElementGroup body = new ElementGroup();
             body.addElement(block);
-
-            Query q = QueryFactory.make();
+            Query q = QueryFactory.create();
             q.setQueryPattern(body);
             q.setQuerySelectType();
             q.addResultVar(Var.ANON);

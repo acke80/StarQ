@@ -34,11 +34,11 @@ public class WebSocketHandler extends TextWebSocketHandler {
     public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         String payload = (String) new JSONObject(message.getPayload()).get("query");
 
-        /*List<String> bindings = new ArrayList<>(sessionMapper.get(session).sendQuery(payload));
+        List<String> bindings = new ArrayList<>(sessionMapper.get(session).sendQuery(payload));
         for(String bind : bindings)
             session.sendMessage(new TextMessage(bind));
 
-         */
+
     }
 
     private static void closeSession(WebSocketSession session){
