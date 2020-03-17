@@ -17,13 +17,13 @@ import java.util.List;
 @Controller
 public class WebSocketHandler extends TextWebSocketHandler {
 
-    private static HashMap<WebSocketSession, RepositoryHandler>
+    private static HashMap<WebSocketSession, Integer>
                     sessionMapper = new HashMap<>();
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws IOException {
         session.sendMessage(new TextMessage("Hello!"));
-        sessionMapper.put(session, new RepositoryHandler());
+        sessionMapper.put(session, 0);
     }
 
     @Override
@@ -35,7 +35,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
     public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         String payload = (String) new JSONObject(message.getPayload()).get("query");
 
-        List<String> bindings = new ArrayList<>(sessionMapper.get(session).sendQuery(payload));
+        List<String> bindings = new ArrayList<>(RepositoryHandler.sendQuery(payload));
         for(String bind : bindings)
             session.sendMessage(new TextMessage(bind));
 

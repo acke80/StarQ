@@ -1,5 +1,6 @@
 package com.redpill_linpro.query_service;
 
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.io.File;
@@ -10,12 +11,10 @@ import java.net.URISyntaxException;
 public class QueryServiceApplication {
 
 	public static void main(String[] args) throws IOException, URISyntaxException {
-		//SpringApplication.run(QueryServiceApplication.class, args);
+		SpringApplication.run(QueryServiceApplication.class, args);
 		System.out.println("\n Start Successful \n");
 
-
-		Vocabulary voc = new Vocabulary("test", "https://swapi.co/vocabulary/");
-		System.out.println(voc.QUERY);
+		Vocabulary voc = new Vocabulary("https://swapi.co/vocabulary/");
 
 		QueryParser.initProperties();
 

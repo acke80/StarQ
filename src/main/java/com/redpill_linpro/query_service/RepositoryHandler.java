@@ -10,13 +10,13 @@ import org.eclipse.rdf4j.repository.RepositoryConnection;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RepositoryHandler {
-    private RepositoryConnection connection;
-    private final Repository repository = FedXFactory.newFederation()
-            .withSparqlEndpoint("http://localhost:7200/repositories/LearningGraphDB")
+public final class RepositoryHandler {
+    private static RepositoryConnection connection;
+    private static final Repository repository = FedXFactory.newFederation()
+            .withSparqlEndpoint("http://localhost:7200/repositories/repoGraphDB")
             .create();
 
-    public RepositoryHandler() { }
+    private RepositoryHandler() { }
 
     /**
      * Sends a query to a SPARQL endpoint and returns the data asked for in the query
@@ -24,7 +24,7 @@ public class RepositoryHandler {
      * @return A list of names and values
      * @throws Exception
      */
-    public List<String> sendQuery(String text) throws Exception{
+    public static List<String> sendQuery(String text) throws Exception{
         List<String> bindings = new ArrayList<>();
 
         try {
@@ -36,14 +36,12 @@ public class RepositoryHandler {
 
             while (tupleQueryResult.hasNext()) {
                 BindingSet bindingSet = tupleQueryResult.next();
-                System.out.println(bindingSet);
 
                 for (Binding binding : bindingSet) {
                     String name = binding.getName();
                     Value value = binding.getValue();
 
                     bindings.add(name + " = " + value);
-                    System.out.println(name + " = " + value);
                 }
             }
         }finally{

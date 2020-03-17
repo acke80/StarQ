@@ -3,18 +3,20 @@ package com.redpill_linpro.query_service;
 import org.apache.jena.query.ParameterizedSparqlString;
 import org.apache.tomcat.jni.File;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public final class Vocabulary {
 
     public final String URI;
     public final String QUERY;
-    public final String FILENAME;
 
     private String[] relations;
 
-    public Vocabulary(String fileName, String uri){
-        FILENAME = fileName;
+    public Vocabulary(String uri){
         URI = uri;
         QUERY = generateQuery();
+        generateVocabulary();
     }
 
     public String getMatch(String relation){
@@ -29,7 +31,26 @@ public final class Vocabulary {
         return pss.toString();
     }
 
+    /** Populates the relations list by sending the QUERY to the Repository, and
+     * retrieving all the relations. */
     private void generateVocabulary(){
+        List<String> uriRelations = new ArrayList<>();
+        try{
+             uriRelations = RepositoryHandler.sendQuery(QUERY);
+        } catch(Exception e){
+            e.printStackTrace();
+        }
 
+        relations = new String[uriRelations.size()];
+
+        for(int i = 0; i < relations.length; i++){
+            String[] splits = uriRelations.get(i).split("/");
+            relations[i] = splits[splits.length - 1];
+        }
+
+    }
+
+    public String[] getRelations(){
+        return relations;
     }
 }
