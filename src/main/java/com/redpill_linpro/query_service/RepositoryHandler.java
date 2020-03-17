@@ -13,16 +13,19 @@ import java.util.List;
 public class RepositoryHandler {
     private RepositoryConnection connection;
     private final Repository repository = FedXFactory.newFederation()
-            .withSparqlEndpoint("http://dbpedia.org/sparql")
-            .withSparqlEndpoint("https://query.wikidata.org/sparql")
+            .withSparqlEndpoint("http://localhost:7200/repositories/LearningGraphDB")
             .create();
-
 
     public RepositoryHandler() { }
 
+    /**
+     * Sends a query to a SPARQL endpoint and returns the data asked for in the query
+     * @param text The query that will be sent to the endpoint
+     * @return A list of names and values
+     * @throws Exception
+     */
     public List<String> sendQuery(String text) throws Exception{
         List<String> bindings = new ArrayList<>();
-
 
         try {
             connection = repository.getConnection();
