@@ -8,29 +8,16 @@ import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.simple.Sentence;
 import edu.stanford.nlp.util.CoreMap;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Node_Literal;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryFactory;
-import org.apache.jena.sparql.algebra.Op;
-import org.apache.jena.sparql.algebra.OpAsQuery;
-import org.apache.jena.sparql.algebra.op.OpBGP;
-import org.apache.jena.sparql.algebra.op.OpFilter;
-import org.apache.jena.sparql.algebra.op.OpProject;
-import org.apache.jena.sparql.core.BasicPattern;
 import org.apache.jena.sparql.core.Var;
-import org.apache.jena.sparql.expr.E_LessThan;
-import org.apache.jena.sparql.expr.Expr;
-import org.apache.jena.sparql.expr.ExprVar;
-import org.apache.jena.sparql.expr.nodevalue.NodeValueInteger;
-import org.apache.jena.sparql.syntax.ElementFilter;
 import org.apache.jena.sparql.syntax.ElementGroup;
 import org.apache.jena.sparql.syntax.ElementTriplesBlock;
 
 import java.util.*;
 
-public class QueryParser {
+public final class QueryParser {
 
     private HashMap<List<CoreLabel>, Collection<RelationTriple>> naturalParseMap;
 
@@ -41,11 +28,24 @@ public class QueryParser {
 
     private Annotation document;
 
-    public QueryParser(String question){
+    private static Properties properties;
+
+    private Vocabulary vocabulary;
+
+    public QueryParser(String question, Vocabulary vocabulary){
         this.question = question;
+        this.vocabulary = vocabulary;
+
         statements = new ArrayList<>();
 
-        initPipeline();
+        while(true)
+            try{
+                annotateDocument();
+                break;
+            }catch (Exception e){
+                e.printStackTrace();
+                initProperties();
+            }
 
         try{
             generateStatements();
@@ -70,13 +70,19 @@ public class QueryParser {
 
     }
 
-    /** Initialize the CoreNLP Pipeline and annotate the
-     * sentences in the question. */
-    private void initPipeline(){
+    /** Initialize the CoreNLP Properties */
+    public static void initProperties(){
+        properties = new Properties();
+        properties.setProperty("annotators", "tokenize, ssplit, pos, lemma");
+    }
+
+    /** Annotate the document with the set properties of the pipeline*/
+    private void annotateDocument() throws Exception{
+        if(Objects.isNull(properties))
+            throw new Exception("Initialize properties before annotation");
+
+        StanfordCoreNLP pipeline = new StanfordCoreNLP(properties);
         document = new Annotation(question);
-        Properties props = new Properties();
-        props.setProperty("annotators", "tokenize, ssplit, pos, lemma");
-        StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
         pipeline.annotate(document);
     }
 
