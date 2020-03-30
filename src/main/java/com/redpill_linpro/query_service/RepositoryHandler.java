@@ -11,11 +11,11 @@ import org.eclipse.rdf4j.repository.RepositoryConnection;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RepositoryHandler {
-    private RepositoryConnection connection;
-    private final Repository repository = new HTTPRepository("http://localhost:7200/repositories/LearningGraphDB");
+public final class RepositoryHandler {
+    private static RepositoryConnection connection;
+    private static final Repository repository = new HTTPRepository("http://localhost:7200/repositories/LearningGraphDB");
 
-    public RepositoryHandler() { }
+    private RepositoryHandler() { }
 
     /**
      * Sends a query to a SPARQL endpoint and returns the data asked for in the query
@@ -23,7 +23,7 @@ public class RepositoryHandler {
      * @return A list of names and values
      * @throws RepositoryException
      */
-    public List<String> sendQuery(String text) throws RepositoryException {
+    public static List<String> sendQuery(String text) throws RepositoryException {
         List<String> bindings = new ArrayList<>();
 
         try {
