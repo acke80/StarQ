@@ -1,10 +1,15 @@
 package com.redpill_linpro.query_service;
 
+import edu.stanford.nlp.ie.machinereading.structure.MachineReadingAnnotations;
+import edu.stanford.nlp.ie.machinereading.structure.RelationMention;
 import edu.stanford.nlp.ie.util.RelationTriple;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
+import edu.stanford.nlp.ling.Document;
+import edu.stanford.nlp.naturalli.NaturalLogicAnnotations;
 import edu.stanford.nlp.naturalli.QuestionToStatementTranslator;
 import edu.stanford.nlp.pipeline.Annotation;
+import edu.stanford.nlp.pipeline.CoreNLPProtos;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.simple.Sentence;
 import edu.stanford.nlp.util.CoreMap;
@@ -29,6 +34,7 @@ public final class QueryParser {
     private Annotation document;
 
     private static Properties properties;
+    private static StanfordCoreNLP pipeline;
 
     private Vocabulary vocabulary;
 
@@ -38,14 +44,11 @@ public final class QueryParser {
 
         statements = new ArrayList<>();
 
-        while(true)
-            try{
-                annotateDocument();
-                break;
-            }catch (Exception e){
-                e.printStackTrace();
-                initProperties();
-            }
+        try{
+            annotateDocument();
+        }catch (InstantiationException e){
+            e.printStackTrace();
+        }
 
         try{
             generateStatements();
@@ -67,23 +70,25 @@ public final class QueryParser {
             i++;
         }
 
-
     }
 
     /** Initialize the CoreNLP Properties */
     public static void initProperties(){
         properties = new Properties();
-        properties.setProperty("annotators", "tokenize, ssplit, pos, lemma");
+        properties.setProperty("annotators", "tokenize, ssplit, pos, lemma, ner");
+        properties.setProperty("ner.model", NerTrain.modelFile.getPath());
+        pipeline = new StanfordCoreNLP(properties);
+
     }
 
-    /** Annotate the document with the set properties of the pipeline*/
-    private void annotateDocument() throws Exception{
+    /** Annotate the document with the properties of the pipeline*/
+    private void annotateDocument() throws InstantiationException{
         if(Objects.isNull(properties))
-            throw new Exception("Initialize properties before annotation");
+            throw new InstantiationException("Initialize properties before annotation");
 
-        StanfordCoreNLP pipeline = new StanfordCoreNLP(properties);
         document = new Annotation(question);
         pipeline.annotate(document);
+
     }
 
     /** Convert questions from the annotated document to statements.
@@ -95,6 +100,7 @@ public final class QueryParser {
         for (CoreMap sentence : document.get(CoreAnnotations.SentencesAnnotation.class)) {
             List<List<CoreLabel>> coreLabelsSingletonList = qtst.toStatement(sentence.get(CoreAnnotations.TokensAnnotation.class));
             naturalParseMap.put(coreLabelsSingletonList.get(0), generateTriples(coreLabelsSingletonList.get(0)));
+
         }
     }
 
@@ -103,6 +109,7 @@ public final class QueryParser {
         StringBuilder sb = new StringBuilder();
         for (CoreLabel coreLabel : coreLabels){
             sb.append(coreLabel.lemma()).append(" ");
+            System.out.println(coreLabel.word() + " " + coreLabel.ner() + " " + coreLabel.tag());
         }
         statements.add(sb.toString());
         return new Sentence(sb.toString()).openieTriples();

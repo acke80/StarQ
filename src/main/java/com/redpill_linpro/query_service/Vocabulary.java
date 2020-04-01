@@ -19,10 +19,6 @@ public final class Vocabulary {
         generateVocabulary();
     }
 
-    public String getMatch(String relation){
-        return null;
-    }
-
     /** Generates the query for selecting all relations in the repository. */
     private String generateQuery(){
         ParameterizedSparqlString pss = new ParameterizedSparqlString();
@@ -53,4 +49,5 @@ public final class Vocabulary {
     public String[] getRelations(){
         return relations;
     }
+
 }

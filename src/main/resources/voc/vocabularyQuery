@@ -1,3 +1,5 @@
+
 select distinct ?p WHERE {
-    ?s ?p ?o . FILTER(CONTAINS(str(?p), str(voc:)))
+    ?s ?p ?o
+    FILTER(CONTAINS(str(?p), str(voc:)))
 }

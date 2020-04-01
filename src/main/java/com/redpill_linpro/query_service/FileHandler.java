@@ -38,4 +38,8 @@ public final class FileHandler {
         return contentBuilder.toString();
     }
 
+    public String getPath(){
+        return this.getClass().getClassLoader().getResource(dir).getPath();
+    }
+
 }
