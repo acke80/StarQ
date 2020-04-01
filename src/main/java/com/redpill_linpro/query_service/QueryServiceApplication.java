@@ -1,16 +1,11 @@
 package com.redpill_linpro.query_service;
 
-import edu.stanford.nlp.ie.crf.CRFClassifier;
-import edu.stanford.nlp.ling.CoreLabel;
-import edu.stanford.nlp.sequences.SeqClassifierFlags;
-import edu.stanford.nlp.util.StringUtils;
+import com.redpill_linpro.query_service.util.Vocabulary;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Properties;
 import java.util.Scanner;
 
 @SpringBootApplication

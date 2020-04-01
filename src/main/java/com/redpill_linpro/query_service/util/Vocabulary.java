@@ -1,7 +1,7 @@
-package com.redpill_linpro.query_service;
+package com.redpill_linpro.query_service.util;
 
+import com.redpill_linpro.query_service.RepositoryHandler;
 import org.apache.jena.query.ParameterizedSparqlString;
-import org.apache.tomcat.jni.File;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,7 @@ public final class Vocabulary {
     /** Generates the query for selecting all relations in the repository. */
     private String generateQuery(){
         ParameterizedSparqlString pss = new ParameterizedSparqlString();
-        pss.setCommandText(new FileHandler("voc/vocabularyQuery").getFileData());
+        pss.setCommandText(new FileHandler("static/vocabularyQuery").getFileData());
         pss.setNsPrefix("voc", URI);
         return pss.toString();
     }
@@ -43,7 +43,6 @@ public final class Vocabulary {
             String[] splits = uriRelations.get(i).split("/");
             relations[i] = splits[splits.length - 1];
         }
-
     }
 
     public String[] getRelations(){

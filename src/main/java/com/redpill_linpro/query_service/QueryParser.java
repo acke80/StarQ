@@ -1,15 +1,12 @@
 package com.redpill_linpro.query_service;
 
-import edu.stanford.nlp.ie.machinereading.structure.MachineReadingAnnotations;
-import edu.stanford.nlp.ie.machinereading.structure.RelationMention;
+import com.redpill_linpro.query_service.triple.TripleFormatter;
+import com.redpill_linpro.query_service.util.Vocabulary;
 import edu.stanford.nlp.ie.util.RelationTriple;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
-import edu.stanford.nlp.ling.Document;
-import edu.stanford.nlp.naturalli.NaturalLogicAnnotations;
 import edu.stanford.nlp.naturalli.QuestionToStatementTranslator;
 import edu.stanford.nlp.pipeline.Annotation;
-import edu.stanford.nlp.pipeline.CoreNLPProtos;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.simple.Sentence;
 import edu.stanford.nlp.util.CoreMap;
@@ -56,18 +53,13 @@ public final class QueryParser {
             System.err.println("Question could not be translated to Statement");
         }
 
-        sparqlQueries = generateSparql();
+        sparqlQueries = generateSparql(null);
+
 
         int i = 0;
         for(Collection<RelationTriple> crt : naturalParseMap.values()){
+            TripleFormatter tf = new TripleFormatter(crt, vocabulary);
             System.out.println("Statement: " + statements.get(i));
-            System.out.println("\nTriples: ");
-            for(RelationTriple rt : crt){
-                System.out.println(rt.subjectGloss() + " - " + rt.relationGloss() + " - " + rt.objectGloss());
-            }
-            System.out.println("\nSparql Query: \n" + sparqlQueries.get(i));
-            System.out.println("____________________________________________");
-            i++;
         }
 
     }
@@ -115,9 +107,8 @@ public final class QueryParser {
         return new Sentence(sb.toString()).openieTriples();
     }
 
-    /** Generate a Sparql Query for each sentence
-     * in the document. */
-    private List<String> generateSparql(){
+    /** Generate a Sparql Query for each sentence in the document. */
+    private List<String> generateSparql(TripleFormatter tripleFormatter){
         List<String> queries = new ArrayList<>();
 
         for(Collection<RelationTriple> crt : naturalParseMap.values()) {

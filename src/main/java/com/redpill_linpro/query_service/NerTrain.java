@@ -1,5 +1,6 @@
 package com.redpill_linpro.query_service;
 
+import com.redpill_linpro.query_service.util.FileHandler;
 import edu.stanford.nlp.ie.crf.CRFClassifier;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.sequences.SeqClassifierFlags;
@@ -61,7 +62,7 @@ public final class NerTrain {
         return CRFClassifier.getClassifierNoExceptions(modelPath);
     }
 
-    public static void main(String args[]){
+    public static void main(String[] args){
         NerTrain.running = true;
         NerTrain.run();
     }
