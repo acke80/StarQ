@@ -1,6 +1,5 @@
 package com.redpill_linpro.query_service;
 
-import org.eclipse.rdf4j.federated.FedXFactory;
 import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.query.*;
 import org.eclipse.rdf4j.repository.Repository;
@@ -13,7 +12,7 @@ import java.util.List;
 
 public final class RepositoryHandler {
     private static RepositoryConnection connection;
-    private static final Repository repository = new HTTPRepository("http://localhost:7200/repositories/repoGraphDB");
+    private static final Repository repository = new HTTPRepository("http://localhost:7200/repositories/LearningGraphDB");
 
     private RepositoryHandler() { }
 
