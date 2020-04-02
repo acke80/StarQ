@@ -36,7 +36,7 @@ public final class NerTrain {
                         modelFile.getPath(),
                         propertiesFile.getPath(),
                         trainFile.getPath());
-                System.out.println("\nTraining Succesful");
+                System.out.println("\nTraining Successful");
             }
         }
     }

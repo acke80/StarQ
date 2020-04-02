@@ -1,6 +1,7 @@
 package com.redpill_linpro.query_service;
 
 import com.redpill_linpro.query_service.triple.TripleFormatter;
+import com.redpill_linpro.query_service.util.FileHandler;
 import com.redpill_linpro.query_service.util.Vocabulary;
 import edu.stanford.nlp.ie.util.RelationTriple;
 import edu.stanford.nlp.ling.CoreAnnotations;
@@ -57,20 +58,18 @@ public final class QueryParser {
 
 
         int i = 0;
-        for(Collection<RelationTriple> crt : naturalParseMap.values()){
-            TripleFormatter tf = new TripleFormatter(crt, vocabulary);
+        for(Map.Entry<List<CoreLabel>, Collection<RelationTriple>> entry : naturalParseMap.entrySet()){
+            TripleFormatter tf = new TripleFormatter(entry.getKey(), entry.getValue(), vocabulary);
             System.out.println("Statement: " + statements.get(i));
         }
-
     }
 
     /** Initialize the CoreNLP Properties */
-    public static void initProperties(){
+    public static void initProperties(FileHandler nerModel){
         properties = new Properties();
         properties.setProperty("annotators", "tokenize, ssplit, pos, lemma, ner");
-        properties.setProperty("ner.model", NerTrain.modelFile.getPath());
+        properties.setProperty("ner.model", nerModel.getPath());
         pipeline = new StanfordCoreNLP(properties);
-
     }
 
     /** Annotate the document with the properties of the pipeline*/
@@ -80,7 +79,6 @@ public final class QueryParser {
 
         document = new Annotation(question);
         pipeline.annotate(document);
-
     }
 
     /** Convert questions from the annotated document to statements.
@@ -148,6 +146,10 @@ public final class QueryParser {
 
     public List<String> getStatements() {
         return statements;
+    }
+
+    public Vocabulary getVocabulary(){
+        return vocabulary;
     }
 
 }

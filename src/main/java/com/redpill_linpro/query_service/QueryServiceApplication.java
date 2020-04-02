@@ -19,7 +19,7 @@ public class QueryServiceApplication {
 		for(String s : voc.getRelations())
 			System.out.println(s);
 
-		QueryParser.initProperties();
+		QueryParser.initProperties(NerTrain.modelFile);
 
 		/*
 		QueryParser q1 = new QueryParser("Where was Anakin Skywalker born?", voc);
