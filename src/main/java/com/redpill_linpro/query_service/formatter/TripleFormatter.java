@@ -1,6 +1,7 @@
-package com.redpill_linpro.query_service.triple;
+package com.redpill_linpro.query_service.formatter;
 
 
+import com.redpill_linpro.query_service.util.SimpleTriple;
 import com.redpill_linpro.query_service.util.Vocabulary;
 import edu.stanford.nlp.ie.util.RelationTriple;
 import edu.stanford.nlp.ling.CoreLabel;
@@ -18,16 +19,13 @@ public class TripleFormatter {
     private List<RelationTriple> triples;
     private List<CoreLabel> coreLabels;
 
-    Vocabulary vocabulary;
-
     private String rootLabel;
     private String rootEntity;
     private String relation;
 
-    public TripleFormatter(List<CoreLabel> coreLabels, Collection<RelationTriple> triples, Vocabulary vocabulary){
+    public TripleFormatter(List<CoreLabel> coreLabels, Collection<RelationTriple> triples){
         this.coreLabels = new ArrayList<>(coreLabels);
         this.triples = new ArrayList<>(triples);
-        this.vocabulary = vocabulary;
 
         for(RelationTriple t : triples)
             System.out.println(t.subjectLemmaGloss()+"-"+t.relationLemmaGloss()+"-"+t.objectLemmaGloss());

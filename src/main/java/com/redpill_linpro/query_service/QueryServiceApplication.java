@@ -15,10 +15,6 @@ public class QueryServiceApplication {
 		SpringApplication.run(QueryServiceApplication.class, args);
 		System.out.println("\n Start Successful \n");
 
-		Vocabulary voc = new Vocabulary("https://swapi.co/vocabulary/");
-		for(String s : voc.getRelations())
-			System.out.println(s);
-
 		QueryParser.initProperties(NerTrain.modelFile);
 
 		/*
@@ -27,14 +23,5 @@ public class QueryServiceApplication {
 		QueryParser q3 = new QueryParser("What is the gravity of Tatooine?", voc);
 		QueryParser q4 = new QueryParser("What height is Yoda?", voc);
 		*/
-
-		Scanner s = new Scanner(System.in);
-		QueryServiceApplication qsa = new QueryServiceApplication();
-		QueryParser q;
-
-		while(true){
-			String str = s.nextLine();
-			q = new QueryParser(str, voc);
-		}
 	}
 }

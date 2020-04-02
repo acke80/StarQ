@@ -1,6 +1,7 @@
 package com.redpill_linpro.query_service;
 
-import com.redpill_linpro.query_service.triple.TripleFormatter;
+import com.redpill_linpro.query_service.formatter.SparqlFormatter;
+import com.redpill_linpro.query_service.formatter.TripleFormatter;
 import com.redpill_linpro.query_service.util.FileHandler;
 import com.redpill_linpro.query_service.util.Vocabulary;
 import edu.stanford.nlp.ie.util.RelationTriple;
@@ -24,7 +25,7 @@ public final class QueryParser {
 
     private HashMap<List<CoreLabel>, Collection<RelationTriple>> naturalParseMap;
 
-    private List<String> sparqlQueries;
+    private List<String> sparqlQueries = new ArrayList<>();
 
     private String question;
     private List<String> statements;
@@ -54,13 +55,9 @@ public final class QueryParser {
             System.err.println("Question could not be translated to Statement");
         }
 
-        sparqlQueries = generateSparql(null);
-
-
-        int i = 0;
         for(Map.Entry<List<CoreLabel>, Collection<RelationTriple>> entry : naturalParseMap.entrySet()){
-            TripleFormatter tf = new TripleFormatter(entry.getKey(), entry.getValue(), vocabulary);
-            System.out.println("Statement: " + statements.get(i));
+            TripleFormatter tf = new TripleFormatter(entry.getKey(), entry.getValue());
+            sparqlQueries.add(generateSparql(tf));
         }
     }
 
@@ -106,8 +103,11 @@ public final class QueryParser {
     }
 
     /** Generate a Sparql Query for each sentence in the document. */
-    private List<String> generateSparql(TripleFormatter tripleFormatter){
-        List<String> queries = new ArrayList<>();
+    private String generateSparql(TripleFormatter tripleFormatter){
+        SparqlFormatter sf = new SparqlFormatter(tripleFormatter, vocabulary);
+        return sf.createSparqlQuery();
+    }
+    /*    List<String> queries = new ArrayList<>();
 
         for(Collection<RelationTriple> crt : naturalParseMap.values()) {
             ElementTriplesBlock block = new ElementTriplesBlock();
@@ -130,7 +130,7 @@ public final class QueryParser {
         }
 
         return queries;
-    }
+    }*/
 
     public HashMap<List<CoreLabel>, Collection<RelationTriple>> getNaturalParseMap() {
         return naturalParseMap;

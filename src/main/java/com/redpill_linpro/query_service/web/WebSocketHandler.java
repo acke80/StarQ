@@ -1,6 +1,8 @@
 package com.redpill_linpro.query_service.web;
 
+import com.redpill_linpro.query_service.QueryParser;
 import com.redpill_linpro.query_service.RepositoryHandler;
+import com.redpill_linpro.query_service.util.Vocabulary;
 import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.socket.CloseStatus;
@@ -19,6 +21,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
     private static HashMap<WebSocketSession, Integer>
                     sessionMapper = new HashMap<>();
+    private static Vocabulary voc = new Vocabulary("https://swapi.co/vocabulary/");
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws IOException {
@@ -34,11 +37,12 @@ public class WebSocketHandler extends TextWebSocketHandler {
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         String payload = (String) new JSONObject(message.getPayload()).get("query");
-
-        List<String> bindings = new ArrayList<>(RepositoryHandler.sendQuery(payload));
-        for(String bind : bindings)
-            session.sendMessage(new TextMessage(bind));
-
+        QueryParser queryParser = new QueryParser(payload, voc);
+        for (String query : queryParser.getSparqlQueries()){
+            List<String> bindings = new ArrayList<>(RepositoryHandler.sendQuery(query));
+            for(String bind : bindings)
+                session.sendMessage(new TextMessage(bind));
+        }
     }
 
     private static void closeSession(WebSocketSession session){

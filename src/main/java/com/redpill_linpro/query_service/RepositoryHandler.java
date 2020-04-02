@@ -34,14 +34,11 @@ public final class RepositoryHandler {
 
             while (tupleQueryResult.hasNext()) {
                 BindingSet bindingSet = tupleQueryResult.next();
-                System.out.println(bindingSet);
 
                 for (Binding binding : bindingSet) {
                     String name = binding.getName();
                     Value value = binding.getValue();
-
                     bindings.add(name + " = " + value);
-                    System.out.println(name + " = " + value);
                 }
             }
         }finally{
