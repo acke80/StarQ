@@ -5,6 +5,7 @@ import com.redpill_linpro.query_service.util.Vocabulary;
 
 import java.util.List;
 
+//TODO: Make the query append first text from FileHandler instance.
 public class SparqlFormatter {
     private List<SimpleTriple> simpleTriples;
     private Vocabulary vocabulary;
@@ -21,13 +22,14 @@ public class SparqlFormatter {
                 "PREFIX voc: " + "<" + vocabulary.URI + ">" + "\n\n" +
                 "select distinct ?answer where {\n");
 
-        for (int i = 0; i < simpleTriples.size(); i++) {
-            if (isEmpty(simpleTriples.get(i)))
+        for (SimpleTriple simpleTriple : simpleTriples) {
+            if (simpleTriple.isEmpty())
                 continue;
-            else
-                query.append(simpleTriples.get(i).SUBJECT + " " +
-                    simpleTriples.get(i).RELATION + " " +
-                    simpleTriples.get(i).OBJECT + ".\n");
+
+            query.append(
+                    simpleTriple.SUBJECT + " " +
+                    simpleTriple.RELATION + " " +
+                    simpleTriple.OBJECT + ".\n");
         }
 
         query.append("}");
@@ -36,10 +38,5 @@ public class SparqlFormatter {
         return finalQuery;
     }
 
-    private boolean isEmpty(SimpleTriple t) {
-        if (t.SUBJECT.length() == 0 && t.RELATION.length() == 0 && t.OBJECT.length() == 0)
-            return true;
-        else
-            return false;
-    }
+
 }

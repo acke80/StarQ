@@ -20,4 +20,9 @@ public class SimpleTriple {
                 triple.objectLemmaGloss());
     }
 
+    public boolean isEmpty() {
+        return SUBJECT.isEmpty()
+                && RELATION.isEmpty()
+                && OBJECT.isEmpty();
+    }
 }

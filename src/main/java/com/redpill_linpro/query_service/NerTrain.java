@@ -37,13 +37,14 @@ public final class NerTrain {
                         propertiesFile.getPath(),
                         trainFile.getPath());
                 System.out.println("\nTraining Successful");
-            }
+            }else if(input.equals("exit"))
+                break;
         }
     }
 
     /** Trains the model with the CRFClassifier, using the Conditional Random Field model.
      * @param trainingDataPath is null, the path defined in the properties file need to be set.
-     * @param modelPath the path were we write the model to. Overwrites if the file already exist,
+     * @param modelPath the path were we write the model to. write to model if the file already exist,
      * creates the file otherwise. */
     private static void train(String modelPath, String propertiesPath, String trainingDataPath) {
         Properties properties = StringUtils.propFileToProperties(propertiesPath);

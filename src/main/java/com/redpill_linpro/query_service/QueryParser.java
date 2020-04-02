@@ -12,12 +12,6 @@ import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.simple.Sentence;
 import edu.stanford.nlp.util.CoreMap;
-import org.apache.jena.graph.Triple;
-import org.apache.jena.query.Query;
-import org.apache.jena.query.QueryFactory;
-import org.apache.jena.sparql.core.Var;
-import org.apache.jena.sparql.syntax.ElementGroup;
-import org.apache.jena.sparql.syntax.ElementTriplesBlock;
 
 import java.util.*;
 
@@ -38,10 +32,13 @@ public final class QueryParser {
     private Vocabulary vocabulary;
 
     public QueryParser(String question, Vocabulary vocabulary){
-        this.question = question;
         this.vocabulary = vocabulary;
-
         statements = new ArrayList<>();
+
+        if(question.substring(question.length() - 1).equals("?"))
+            this.question = question;
+        else
+            this.question = question + "?";
 
         try{
             annotateDocument();

@@ -1,12 +1,10 @@
 package com.redpill_linpro.query_service;
 
-import com.redpill_linpro.query_service.util.Vocabulary;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Scanner;
 
 @SpringBootApplication
 public class QueryServiceApplication {
@@ -18,10 +16,12 @@ public class QueryServiceApplication {
 		QueryParser.initProperties(NerTrain.modelFile);
 
 		/*
-		QueryParser q1 = new QueryParser("Where was Anakin Skywalker born?", voc);
-		QueryParser q2 = new QueryParser("Where does Yoda live?", voc);
-		QueryParser q3 = new QueryParser("What is the gravity of Tatooine?", voc);
-		QueryParser q4 = new QueryParser("What height is Yoda?", voc);
+		Vocabulary voc = new Vocabulary("https://swapi.co/vocabulary/");
+		QueryParser q1 = new QueryParser("What is the gravity of Tatooine?", voc);
+		QueryParser q2 = new QueryParser("What is the gravity?", voc);
+		QueryParser q3 = new QueryParser("Where is Darth Vader?", voc);
+		QueryParser q4 = new QueryParser("Who is Darth Vader?", voc);
+		QueryParser q5 = new QueryParser("What is Tatooine?", voc);
 		*/
 	}
 }
