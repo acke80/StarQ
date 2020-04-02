@@ -1,4 +1,4 @@
-package com.redpill_linpro.query_service.triple;
+package com.redpill_linpro.query_service.util;
 
 import edu.stanford.nlp.ie.util.RelationTriple;
 

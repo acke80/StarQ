@@ -1,6 +1,7 @@
-package com.redpill_linpro.query_service.triple;
+package com.redpill_linpro.query_service.formatter;
 
 
+import com.redpill_linpro.query_service.util.SimpleTriple;
 import com.redpill_linpro.query_service.util.Vocabulary;
 import edu.stanford.nlp.ie.util.RelationTriple;
 
@@ -26,14 +27,14 @@ public class TripleFormatter {
 
     /** Checks if the Entity type has the relation in the repository.
      * @return false if no triples exist in the repository, else true. */
-    public boolean checkValidEntityRelation(String entity, String relation){
+    public boolean checkValidEntityRelation(String entity, String relation) {
         return true;
     }
 
     /**@return A SimpleTriple for selecting the resource linked
      * with the rdfs:label rootLabel.*/
-    private SimpleTriple getRootResourceTriple(String rootLabel){
-        return null;
+    private SimpleTriple getRootResourceTriple(String rootLabel) {
+        return new SimpleTriple("?root", "rdfs:label", rootLabel);
     }
 
     /**@return A SimpleTriple in the form root-relation-answer,

@@ -1,6 +1,6 @@
 package com.redpill_linpro.query_service;
 
-import com.redpill_linpro.query_service.triple.TripleFormatter;
+import com.redpill_linpro.query_service.formatter.TripleFormatter;
 import com.redpill_linpro.query_service.util.Vocabulary;
 import edu.stanford.nlp.ie.util.RelationTriple;
 import edu.stanford.nlp.ling.CoreAnnotations;
