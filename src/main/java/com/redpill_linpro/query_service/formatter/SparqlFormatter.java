@@ -20,16 +20,22 @@ public class SparqlFormatter {
         query.append("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
                 "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" +
                 "PREFIX voc: " + "<" + vocabulary.URI + ">" + "\n\n" +
-                "select distinct ?answer where {\n");
+                "select distinct * where {\n");
 
         for (SimpleTriple simpleTriple : simpleTriples) {
-            if (simpleTriple.isEmpty())
-                continue;
-
-            query.append(
-                    simpleTriple.SUBJECT + " " +
-                    simpleTriple.RELATION + " " +
-                    simpleTriple.OBJECT + ".\n");
+            if (!simpleTriple.isEmpty())
+                if (simpleTriple.RELATION.contains("rdfs:label")) {
+                    query.append(
+                            simpleTriple.SUBJECT + " " +
+                            simpleTriple.RELATION + " " +
+                            "?label" + " .\n" +
+                            "filter(contains(?label, " + simpleTriple.OBJECT + ")) .\n");
+                } else {
+                    query.append(
+                            simpleTriple.SUBJECT + " " +
+                            simpleTriple.RELATION + " " +
+                            simpleTriple.OBJECT + " .\n");
+                }
         }
 
         query.append("}");
