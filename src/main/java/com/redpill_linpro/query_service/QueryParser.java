@@ -61,9 +61,10 @@ public final class QueryParser {
     /** Initialize the CoreNLP Properties */
     public static void initProperties(FileHandler nerModel){
         properties = new Properties();
-        properties.setProperty("annotators", "tokenize, ssplit, pos, lemma, ner");
+        properties.setProperty("annotators", "tokenize, ssplit, pos, depparse, lemma, ner, natlog, openie");
         properties.setProperty("ner.model", nerModel.getPath());
         pipeline = new StanfordCoreNLP(properties);
+        System.out.println("Properties loaded");
     }
 
     /** Annotate the document with the properties of the pipeline*/
