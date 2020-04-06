@@ -6,6 +6,7 @@ import com.redpill_linpro.query_service.util.Vocabulary;
 import edu.stanford.nlp.ie.util.RelationTriple;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.util.StringUtils;
+import org.eclipse.jetty.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,6 +34,7 @@ public class TripleFormatter {
         findRootEntity();
         findRelation();
 
+        formattedTriples.add(getRootTypeTriple());
         formattedTriples.add(getRootResourceTriple());
         formattedTriples.add(getAnswerRelationTriple());
 
@@ -50,13 +52,22 @@ public class TripleFormatter {
         return formattedTriples;
     }
 
+    public boolean hasRootLabel(){
+        return rootLabel != null;
+    }
+
+    public boolean hasRelation(){
+        return relation != null;
+    }
+
     /** Finds the entity in the triple(s), and gets the label and entityType. */
     private void findRootEntity(){
         for(CoreLabel coreLabel : coreLabels){
             if(!coreLabel.ner().equals("O")){
-                if(rootLabel == null){
+                if(!hasRootLabel()){
                     rootLabel = coreLabel.word();
-                    rootEntity = coreLabel.ner();
+                    rootEntity = "voc:" +
+                            StringUtils.capitalize(coreLabel.ner().toLowerCase());
                 }else
                     rootLabel = (rootLabel + " " + coreLabel.word());
             }
@@ -69,24 +80,31 @@ public class TripleFormatter {
             RelationTriple triple = triples.get(0);
             String relation = triple.relationLemmaGloss();
 
-            if(rootLabel == null){
-                if(relation.equals("be") || relation.equals("have"))
-                    this.relation = "voc:" + triple.objectLemmaGloss();
-                else if(relation.contains("be") && (relation.contains("of"))){
-                    this.relation =  "voc:" + relation.replace("be ", "").replace(" of", "");
+            if(!hasRootLabel()){
+                if(relation.equals("be") || relation.equals("have")) {
+                    //this.relation = "voc:" + triple.objectLemmaGloss();
+                    rootEntity = triple.objectLemmaGloss();
+                    rootEntity = "voc:" + StringUtils.capitalize(rootEntity);
+                }else if(relation.contains("be") && (relation.contains("of"))){
+                    this.relation =  "voc:" + relation.replace("be ", "").replace (" of", "");
+                    rootEntity = triple.objectLemmaGloss();
+                    rootEntity = "voc:" + StringUtils.capitalize(rootEntity);
+                }else if(relation.contains("be") && (relation.contains("on"))){
+                    this.relation =  "voc:" + relation.replace("be ", "").replace(" on", "");
                     rootEntity = triple.objectLemmaGloss();
                     rootEntity = "voc:" + StringUtils.capitalize(rootEntity);
                 }
             }else{
-                if(relation.equals("be")){
+                if(relation.equals("be") || relation.equals("have")){
                     if(triple.subjectLemmaGloss().equals(rootLabel))
                         this.relation = "voc:" + triple.objectLemmaGloss();
                     else
                         this.relation = "voc:" + triple.subjectLemmaGloss();
                 }else if(relation.contains("be") && relation.contains("with")){
                     this.relation =  "voc:" + relation.replace("be ", "").replace(" with", "");
+                }else if(relation.contains("be") && relation.contains("of")){
+                    this.relation =  "voc:" + relation.replace("be ", "").replace(" of", "");
                 }
-
             }
         }else{
             String relationWord = "";
@@ -107,25 +125,29 @@ public class TripleFormatter {
 
             if(isCorrectTriples)
                 relation = "voc:" + relationWord;
+
         }
+    }
+
+    /**@return A SimpleTriple for selecting the root Entity Type*/
+    private SimpleTriple getRootTypeTriple(){
+        if(rootEntity == null)
+            return new SimpleTriple("","","");
+        return new SimpleTriple("?root", "a", rootEntity);
     }
 
     /**@return A SimpleTriple for selecting the resource of root.*/
     private SimpleTriple getRootResourceTriple(){
-        if(rootLabel == null){
-            if(rootEntity == null)
-                return new SimpleTriple("","","");
-            else
-                return new SimpleTriple("?root", "a", rootEntity);
-        }
-        return new SimpleTriple("?root", "rdfs:label", "\""+ rootLabel +"\"");
+        return new SimpleTriple("?root", "rdfs:label", "?rootLabel");
     }
 
     /**@return A SimpleTriple in the form root-relation-answer,
      * which describes the relation between the root resource and the
      * answer we want to select. */
     private SimpleTriple getAnswerRelationTriple(){
-        return new SimpleTriple("?root", relation, "?answer");
+        if(hasRelation())
+            return new SimpleTriple("?root", relation, "?answer");
+        return new SimpleTriple("","","");
     }
 
     /*

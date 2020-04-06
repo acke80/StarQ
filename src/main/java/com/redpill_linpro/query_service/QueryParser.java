@@ -60,6 +60,7 @@ public final class QueryParser {
 
     /** Initialize the CoreNLP Properties */
     public static void initProperties(FileHandler nerModel){
+        System.out.print("Loading Properties...");
         properties = new Properties();
         properties.setProperty("annotators", "tokenize, ssplit, pos, depparse, lemma, ner, natlog, openie");
         properties.setProperty("ner.model", nerModel.getPath());

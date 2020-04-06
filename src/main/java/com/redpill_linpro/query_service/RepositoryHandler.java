@@ -35,11 +35,9 @@ public final class RepositoryHandler {
             while (tupleQueryResult.hasNext()) {
                 BindingSet bindingSet = tupleQueryResult.next();
 
-                for (Binding binding : bindingSet) {
-                    String name = binding.getName();
-                    Value value = binding.getValue();
-                    bindings.add(name + " = " + value);
-                }
+                for (Binding binding : bindingSet)
+                    bindings.add(binding.getValue().stringValue());
+
             }
         }finally{
             connection.close();
