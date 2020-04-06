@@ -15,13 +15,5 @@ public class QueryServiceApplication {
 
 		QueryParser.initProperties(NerTrain.modelFile);
 
-		/*
-		Vocabulary voc = new Vocabulary("https://swapi.co/vocabulary/");
-		QueryParser q1 = new QueryParser("What is the gravity of Tatooine?", voc);
-		QueryParser q2 = new QueryParser("What is the gravity?", voc);
-		QueryParser q3 = new QueryParser("Where is Darth Vader?", voc);
-		QueryParser q4 = new QueryParser("Who is Darth Vader?", voc);
-		QueryParser q5 = new QueryParser("What is Tatooine?", voc);
-		*/
 	}
 }

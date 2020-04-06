@@ -5,8 +5,10 @@ import com.redpill_linpro.query_service.util.SimpleTriple;
 import com.redpill_linpro.query_service.util.Vocabulary;
 import edu.stanford.nlp.ie.util.RelationTriple;
 import edu.stanford.nlp.ling.CoreLabel;
+import edu.stanford.nlp.sentiment.SentimentModel;
 import edu.stanford.nlp.util.StringUtils;
 import org.eclipse.jetty.util.StringUtil;
+import org.mapdb.Atomic;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,17 +21,19 @@ public class TripleFormatter {
     private List<SimpleTriple> formattedTriples = new ArrayList<>();
     private List<RelationTriple> triples;
     private List<CoreLabel> coreLabels;
+    private String[] vocabularyRelations;
 
     private String rootLabel;
     private String rootEntity;
     private String relation;
 
-    public TripleFormatter(List<CoreLabel> coreLabels, Collection<RelationTriple> triples){
+    public TripleFormatter(List<CoreLabel> coreLabels, Collection<RelationTriple> triples, Vocabulary vocabulary){
         this.coreLabels = new ArrayList<>(coreLabels);
         this.triples = new ArrayList<>(triples);
+        vocabularyRelations = vocabulary.getRelations();
 
         for(RelationTriple t : triples)
-            System.out.println(t.subjectLemmaGloss()+"-"+t.relationLemmaGloss()+"-"+t.objectLemmaGloss());
+            System.out.println(t.subjectGloss()+"-"+t.relationGloss()+"-"+t.objectGloss());
 
         findRootEntity();
         findRelation();
@@ -78,36 +82,42 @@ public class TripleFormatter {
         }
     }
 
-    /** Finds the relation between the root and answer. */
+    /** Finds the relation we are looking for. */
     private void findRelation(){
         if(triples.size() == 1){
             RelationTriple triple = triples.get(0);
-            String relation = triple.relationLemmaGloss();
+            String relation = triple.relationGloss();
 
             if(!hasRootLabel()){
                 if(relation.equals("be") || relation.equals("have")) {
-                    //this.relation = "voc:" + triple.objectLemmaGloss();
-                    rootEntity = triple.objectLemmaGloss();
+                    rootEntity = triple.objectGloss();
                     rootEntity = "voc:" + StringUtils.capitalize(rootEntity);
                 }else if(relation.contains("be") && (relation.contains("of"))){
-                    this.relation =  "voc:" + relation.replace("be ", "").replace (" of", "");
-                    rootEntity = triple.objectLemmaGloss();
+                    this.relation = relation.replace("be ", "").replace (" of", "");
+                    this.relation = "voc:" + getMatchedRelation(this.relation);
+                    rootEntity = triple.objectGloss();
                     rootEntity = "voc:" + StringUtils.capitalize(rootEntity);
                 }else if(relation.contains("be") && (relation.contains("on"))){
-                    this.relation =  "voc:" + relation.replace("be ", "").replace(" on", "");
-                    rootEntity = triple.objectLemmaGloss();
+                    this.relation = relation.replace("be ", "").replace(" on", "");
+                    this.relation = "voc:" + getMatchedRelation(this.relation);
+                    rootEntity = triple.objectGloss();
                     rootEntity = "voc:" + StringUtils.capitalize(rootEntity);
                 }
             }else{
                 if(relation.equals("be") || relation.equals("have")){
-                    if(triple.subjectLemmaGloss().equals(rootLabel))
-                        this.relation = "voc:" + triple.objectLemmaGloss();
+                    if(triple.subjectGloss().equals(rootLabel))
+                        this.relation = triple.objectGloss();
                     else
-                        this.relation = "voc:" + triple.subjectLemmaGloss();
+                        this.relation = triple.subjectGloss();
+
+                    this.relation = "voc:" + getMatchedRelation(this.relation);
+
                 }else if(relation.contains("be") && relation.contains("with")){
-                    this.relation =  "voc:" + relation.replace("be ", "").replace(" with", "");
+                    this.relation = relation.replace("be ", "").replace(" with", "");
+                    this.relation = "voc:" + getMatchedRelation(this.relation);
                 }else if(relation.contains("be") && relation.contains("of")){
-                    this.relation =  "voc:" + relation.replace("be ", "").replace(" of", "");
+                    this.relation =  relation.replace("be ", "").replace(" of", "");
+                    this.relation = "voc:" + getMatchedRelation(this.relation);
                 }
             }
         }else{
@@ -115,20 +125,32 @@ public class TripleFormatter {
             boolean isCorrectTriples = false;
 
             for(RelationTriple triple : triples){
-                String subject = triple.subjectLemmaGloss();
-                String relation = triple.relationLemmaGloss();
-                String object = triple.objectLemmaGloss();
+                String subject = triple.subjectGloss();
+                String relation = triple.relationGloss();
+                String object = triple.objectGloss();
 
                 if(subject.equals("thing")){
-                    if(relation.equals("be"))
+
+                    if(relation.equals("be") && object.contains(rootLabel)){
+                        isCorrectTriples = true;
+
+                        if(object.contains("of"))
+                            relationWord = object.split(" of")[0];
+                        else if(object.contains("in"))
+                            relationWord = object.split(" in")[0];
+                        else if(object.contains("with"))
+                            relationWord = object.split(" with")[0];
+
+                    }else if(relation.equals("be"))
                         relationWord = object;
+
                     else if(object.equals(rootLabel))
                         isCorrectTriples = true;
                 }
             }
 
             if(isCorrectTriples)
-                relation = "voc:" + relationWord;
+                relation = "voc:" + getMatchedRelation(relationWord);
 
         }
     }
@@ -154,14 +176,62 @@ public class TripleFormatter {
         return new SimpleTriple("","","");
     }
 
-    /*
-    TODO: check for camelCase relations in the voc, and match them with lowercase etc.
-    TODO: for example; voc has eyeColor relation, but user types eyecolor.
-    TODO: maybe implement Word2Vec with Stanford GloVe.
-    TODO: for example; person should map to human in the Star Wars voc.
-     */
-    /**Match the relation with a relation in the vocabulary. */
-    private String matchRelation(String relation){
-        return null;
+    /**Match the relation with a relation in the vocabulary.
+     * If the relation is short for a real word, for example
+     * 'desc' is short for description; the method will match
+     * description with desc.*/
+    private String getMatchedRelation(String relation){
+        SentimentModel model =
+                SentimentModel.loadSerialized("edu/stanford/nlp/models/sentiment/sentiment.ser.gz");
+
+        boolean wordsRecognize = false;
+        String[] relationSplit = relation.split(" ");
+
+        for(String s : relationSplit){
+            wordsRecognize = model.wordVectors.containsKey(s);
+            if(!model.wordVectors.containsKey(s)) {
+                wordsRecognize = false;
+                break;
+            }
+        }
+
+        relation = relation.replace(" ", "").toLowerCase();
+        StringBuilder sb1, sb2;
+        String word1, word2;
+        boolean isPastUpperCase;
+
+        for(String r : vocabularyRelations){
+            isPastUpperCase = false;
+            sb1 = new StringBuilder();
+            sb2 = new StringBuilder();
+
+            for(Character c : r.toCharArray()){
+                if(Character.isUpperCase(c))
+                    isPastUpperCase = true;
+
+                if(isPastUpperCase)
+                    sb2.append(c);
+                else
+                    sb1.append(c);
+            }
+
+            word1 = sb1.toString();
+            word2 = sb2.toString();
+
+            if(word2.equals("")) {
+                if (relation.equals(word1))
+                    return word1;
+                else if(wordsRecognize && relation.contains(word1))
+                    return word1;
+            }else {
+                if (wordsRecognize && word1.contains(relationSplit[0]) && word2.toLowerCase().contains(relationSplit[1]))
+                    return word1 + word2;
+                else if(wordsRecognize && relation.contains(word1) && relation.contains(word2.toLowerCase()))
+                    return word1 + word2;
+                else if(relation.equals(word1 + word2.toLowerCase()))
+                    return word1 + word2;
+            }
+        }
+        return relation;
     }
 }

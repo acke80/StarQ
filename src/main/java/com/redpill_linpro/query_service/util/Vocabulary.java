@@ -22,7 +22,7 @@ public final class Vocabulary {
     /** Generates the query for selecting all relations in the repository. */
     private String generateQuery(){
         ParameterizedSparqlString pss = new ParameterizedSparqlString();
-        pss.setCommandText(new FileHandler("static/vocabularyQuery").getFileData());
+        pss.setCommandText(new FileHandler("static/sparql/vocabularyQuery").getFileData());
         pss.setNsPrefix("voc", URI);
         return pss.toString();
     }

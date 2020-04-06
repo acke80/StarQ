@@ -12,6 +12,7 @@ import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.simple.Sentence;
 import edu.stanford.nlp.util.CoreMap;
+import edu.stanford.nlp.util.StringUtils;
 
 import java.util.*;
 
@@ -53,7 +54,7 @@ public final class QueryParser {
         }
 
         for(Map.Entry<List<CoreLabel>, Collection<RelationTriple>> entry : naturalParseMap.entrySet()){
-            TripleFormatter tf = new TripleFormatter(entry.getKey(), entry.getValue());
+            TripleFormatter tf = new TripleFormatter(entry.getKey(), entry.getValue(), vocabulary);
             sparqlQueries.add(generateSparql(tf));
         }
     }
@@ -93,10 +94,25 @@ public final class QueryParser {
     /** Generate Triples from the Statements. */
     private Collection<RelationTriple> generateTriples(List<CoreLabel> coreLabels){
         StringBuilder sb = new StringBuilder();
-        for (CoreLabel coreLabel : coreLabels){
+        for(CoreLabel c : coreLabels)
+            System.out.println(c.lemma() + " . " + c.tag());
+        for (int i = 0; i < coreLabels.size(); i++){
+            CoreLabel coreLabel = coreLabels.get(i);
+
+            if(!coreLabel.lemma().equals("thing") &&
+                    (coreLabel.tag().equals("NN") || coreLabel.tag().equals("JJ"))){
+
+                if(i+1 < coreLabels.size())
+                    if(coreLabels.get(i+1).tag().equals("NN") || coreLabels.get(i+1).tag().equals("JJ")){
+                        String camelCaseString = StringUtils.capitalize(coreLabels.get(++i).lemma());
+                        sb.append(coreLabel.lemma()).append(camelCaseString).append(" ");
+                        continue;
+                    }
+            }
+
             sb.append(coreLabel.lemma()).append(" ");
-            System.out.println(coreLabel.word() + " " + coreLabel.ner() + " " + coreLabel.tag());
         }
+
         statements.add(sb.toString());
         return new Sentence(sb.toString()).openieTriples();
     }
@@ -106,30 +122,6 @@ public final class QueryParser {
         SparqlFormatter sf = new SparqlFormatter(tripleFormatter, vocabulary);
         return sf.createSparqlQuery();
     }
-    /*    List<String> queries = new ArrayList<>();
-
-        for(Collection<RelationTriple> crt : naturalParseMap.values()) {
-            ElementTriplesBlock block = new ElementTriplesBlock();
-
-            for (RelationTriple rt : crt)
-                block.addTriple(
-                        Triple.create(
-                                Var.alloc(rt.subjectLemmaGloss()),
-                                Var.alloc(rt.relationLemmaGloss()),
-                                Var.alloc(rt.objectLemmaGloss())));
-
-            ElementGroup body = new ElementGroup();
-            body.addElement(block);
-            Query q = QueryFactory.create();
-            q.setQueryPattern(body);
-            q.setQuerySelectType();
-            q.addResultVar(Var.ANON);
-
-            queries.add(q.toString());
-        }
-
-        return queries;
-    }*/
 
     public HashMap<List<CoreLabel>, Collection<RelationTriple>> getNaturalParseMap() {
         return naturalParseMap;

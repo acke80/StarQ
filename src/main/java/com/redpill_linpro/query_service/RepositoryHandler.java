@@ -12,7 +12,7 @@ import java.util.List;
 
 public final class RepositoryHandler {
     private static RepositoryConnection connection;
-    private static final Repository repository = new HTTPRepository("http://localhost:7200/repositories/LearningGraphDB");
+    private static final Repository repository = new HTTPRepository("http://localhost:7200/repositories/repoGraphDB");
 
     private RepositoryHandler() { }
 

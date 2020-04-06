@@ -11,9 +11,9 @@ import java.util.Scanner;
 
 public final class NerTrain {
 
-    public static FileHandler propertiesFile = new FileHandler("roth.properties");
-    public static FileHandler modelFile = new FileHandler("model.ser");
-    public static FileHandler trainFile = new FileHandler("trainingData.txt");
+    public static FileHandler propertiesFile = new FileHandler("properties/roth.properties");
+    public static FileHandler modelFile = new FileHandler("models/modelStarWars.ser");
+    public static FileHandler trainFile = new FileHandler("trainingData/trainingDataStarWars.txt");
 
     private static boolean running;
 
