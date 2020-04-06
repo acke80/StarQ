@@ -39,7 +39,7 @@ public final class RepositoryHandler {
                     bindings.add(binding.getValue().stringValue());
 
             }
-        }finally{
+        } finally{
             connection.close();
         }
 

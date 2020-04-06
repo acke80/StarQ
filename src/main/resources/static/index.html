@@ -3,59 +3,65 @@
 
 <head>
     <title>StarQ</title>
-    <h1>StarQ</h1>
     <script src="/webjars/jquery/jquery.min.js"></script>
     <script src="/app.js"></script>
 
-    <style>
+</head>
+<style>
         h1 {
-            margin-left: 10.5cm;
+            color: grey;
             margin-bottom: 1cm;
-            font-size: 1cm;
+            font-size: 4em;
+            text-align: center;
         }
 
-        button {
+        #connect, #disconnect {
             padding: 10px;
             margin-top: 10px;
+            margin-bottom: 10px;
             color: darkblue;
         }
 
-        table, th {
-            border: 1px solid black;
+        #send {
+            position: absolute;
+            padding: 10px;
+            color: darkblue;
         }
 
-        #query {
-            width: 400px;
-            height: 300px;
-        }
-
-        #queryArea, #buttons, #bindings {
-            display: inline-block;
-            vertical-align: top;
+        .queryArea {
+            width: 50%;
+            font-family: Verdana, Arial, Helvetica, sans-serif;
+            font-size: 20px;
+            background-color: #424242;
+            color: white;
+            padding: 5px;
+            left: 10px;
+            border: 1px solid grey;
         }
 
         div.bindings {
-            width: 400px;
+            width: 50%;
             height: 300px;
-            border: 1px solid black;
             overflow-y: scroll;
+            border: 1px solid grey;
+            text-align: left;
+            padding-left: 10px;
+            color: white;
         }
     </style>
-</head>
-<body>
-
-    <div id="buttons">
+<body style="background-color: #424242;">
+    <div id="logo" align="center">
+        <img src="StarQ6.png" alt="logo">
+    </div>
+    <div id="queryArea" align="center">
+        <input class="queryArea" id="query" placeholder="Enter question">
+        <button id="send" disabled="disabled" type="submit">Send</button>
+    </div>
+    <div class="buttons" id="buttons" align="center">
         <button id="connect" type="button">Connect</button>
-        <br>
         <button id="disconnect" type="button" disabled="disabled">Disconnect</button>
-        <br>
-        <button id="send" disabled="disabled" type="submit" onclick="createTable()">Send</button>
-        <br>
     </div>
-    <div id="queryArea">
-        <textarea id="query" placeholder="Type query here"></textarea>
-    </div>
-    <div id="bindings">
+    <div id="bindings" align="center">
         <div class="bindings"></div>
     </div>
 

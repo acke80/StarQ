@@ -60,6 +60,10 @@ public class TripleFormatter {
         return relation != null;
     }
 
+    public String getRootLabel() {
+        return rootLabel;
+    }
+
     /** Finds the entity in the triple(s), and gets the label and entityType. */
     private void findRootEntity(){
         for(CoreLabel coreLabel : coreLabels){
