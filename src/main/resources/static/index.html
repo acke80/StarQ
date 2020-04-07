@@ -18,7 +18,7 @@
         #send {
             position: absolute;
             padding: 10px;
-            color: darkblue;
+            top: 260px;
         }
 
         .queryArea {
@@ -41,11 +41,13 @@
             padding-left: 10px;
             padding-top: 10px;
             color: white;
+            font-family: Verdana, Arial, Helvetica, sans-serif;
         }
 
-        .btn {
-            position: relative;
-            top: 260px;
+        #connection-status {
+            color: green;
+            padding: 10px;
+            font-family: Verdana, Arial, Helvetica, sans-serif;
         }
     </style>
 
@@ -60,7 +62,7 @@
                src="sendButtonDefault.png" alt="sendButton" height="45px" width=auto
                onmouseover="hover(this)" onmouseout="unhover(this)">
     </div>
-    <div id="connection-status" align="center" style="color: white; padding: 10px;"></div>
+    <div id="connection-status" align="center"></div>
     <div id="bindings" align="center">
         <div class="bindings"></div>
     </div>

@@ -41,9 +41,10 @@ function sendData() {
 
 function respond(data){
     var table = $("<table></table>").addClass("foo");
+    $("table").attr("cellspacing", 10);
             row = $("<tr></tr>");
-            if (data.includes(",")) {
-                var newData = data.split(",");
+            if (data.includes("#")) {
+                var newData = data.split("#");
                 for (var j = 0; j < 2; j++) {
                     var rowData = $("<td></td>").addClass("bar").text(newData[j]);
                     row.append(rowData);

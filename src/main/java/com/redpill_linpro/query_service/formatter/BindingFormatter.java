@@ -9,7 +9,7 @@ public class BindingFormatter {
     public static List<String> compressList(List<String> bindings) {
         List<String> compressedBindings = new ArrayList<>();
         for (int i = 0; i < bindings.size(); i+=2){
-            compressedBindings.add(bindings.get(i) + "," + bindings.get(i + 1));
+            compressedBindings.add(bindings.get(i) + "#" + bindings.get(i + 1));
         }
         return compressedBindings;
     }
