@@ -1,5 +1,6 @@
 package com.redpill_linpro.query_service.web;
 
+import com.redpill_linpro.query_service.RepositoryHandler;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.*;
 
@@ -9,6 +10,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
 
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(new WebSocketHandler(), "/query");
+        RepositoryHandler.repositoryConnection();
     }
 
 }

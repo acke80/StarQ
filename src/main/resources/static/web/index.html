@@ -15,13 +15,6 @@
             text-align: center;
         }
 
-        #connect, #disconnect {
-            padding: 10px;
-            margin-top: 10px;
-            margin-bottom: 10px;
-            color: darkblue;
-        }
-
         #send {
             position: absolute;
             padding: 10px;
@@ -40,27 +33,34 @@
         }
 
         div.bindings {
-            width: 50%;
+            width: 40%;
             height: 300px;
             overflow-y: scroll;
             border: 1px solid grey;
-            text-align: left;
+            text-align: middle;
             padding-left: 10px;
+            padding-top: 10px;
             color: white;
         }
+
+        .btn {
+            position: relative;
+            top: 260px;
+        }
     </style>
+
 <body style="background-color: #424242;">
+
     <div id="logo" align="center">
         <img src="StarQ6.png" alt="logo">
     </div>
     <div id="queryArea" align="center">
         <input class="queryArea" id="query" placeholder="Enter question">
-        <button id="send" disabled="disabled" type="submit">Send</button>
+        <input class="btn" id="send" disabled="disabled" type="image"
+               src="sendButtonDefault.png" alt="sendButton" height="45px" width=auto
+               onmouseover="hover(this)" onmouseout="unhover(this)">
     </div>
-    <div class="buttons" id="buttons" align="center">
-        <button id="connect" type="button">Connect</button>
-        <button id="disconnect" type="button" disabled="disabled">Disconnect</button>
-    </div>
+    <div id="connection-status" align="center" style="color: white; padding: 10px;"></div>
     <div id="bindings" align="center">
         <div class="bindings"></div>
     </div>

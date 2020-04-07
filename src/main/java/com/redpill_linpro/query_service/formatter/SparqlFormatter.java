@@ -2,7 +2,6 @@ package com.redpill_linpro.query_service.formatter;
 
 import com.redpill_linpro.query_service.util.SimpleTriple;
 import com.redpill_linpro.query_service.util.Vocabulary;
-
 import java.util.List;
 
 //TODO: Make the query append first text from FileHandler instance.
@@ -21,8 +20,17 @@ public class SparqlFormatter {
      * @return A string in the form of a SPARQL query */
     public String createSparqlQuery() {
         StringBuilder query = new StringBuilder();
-        String select = "?rootLabel ?answerLabel";
-        query.append(sparqlSelection(select));
+        query.append("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
+                "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" +
+                "PREFIX voc: " + "<" + vocabulary.URI + ">" + "\n\n" +
+                "select distinct * where {\n");
+
+        if (tripleFormatter.hasRootLabel() && tripleFormatter.hasRelation())
+            query = sparqlSelection(query, "?answerLabel");
+        else if (!tripleFormatter.hasRootLabel() && tripleFormatter.hasRelation())
+            query = sparqlSelection(query, "?rootLabel ?answerLabel");
+        else if (!tripleFormatter.hasRootLabel() && !tripleFormatter.hasRelation())
+            query = sparqlSelection(query, "?rootLabel");
 
         for (SimpleTriple simpleTriple : simpleTriples) {
             if (!simpleTriple.isEmpty()) {
@@ -48,13 +56,10 @@ public class SparqlFormatter {
     }
 
     // Set the selection for the query. Ex: * selects everything, ?s ?o selects the variables ?s and ?o.
-    private StringBuilder sparqlSelection(String selection) {
-        StringBuilder query = new StringBuilder();
-        query.append(
-                "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
-                "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" +
-                "PREFIX voc: " + "<" + vocabulary.URI + ">" + "\n\n" +
-                "select distinct " + selection + " where {\n");
+    private StringBuilder sparqlSelection(StringBuilder query, String selection) {
+        int index = query.indexOf("*");
+        query.deleteCharAt(index);
+        query.insert(index, selection);
         return query;
     }
 
