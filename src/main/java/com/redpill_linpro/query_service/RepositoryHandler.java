@@ -23,14 +23,12 @@ public final class RepositoryHandler {
             System.out.print("*****************************************************************\n" +
                     "Enter the name of the repository to connect to (not the whole URL)\n" +
                     "*****************************************************************\n");
-            System.out.print("Name: ");
-            System.out.flush();
 
             String input = scanner.nextLine();
             repository = new HTTPRepository(repo + input);
         } else {
             System.out.println("***** Already Connected *****");
-            System.out.println("Connected to: " + repository);
+            System.out.println("Connected to: " + repository.toString());
         }
     }
 
