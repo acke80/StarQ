@@ -2,6 +2,8 @@ package com.redpill_linpro.query_service.web;
 
 import com.redpill_linpro.query_service.QueryParser;
 import com.redpill_linpro.query_service.RepositoryHandler;
+import com.redpill_linpro.query_service.formatter.BindingFormatter;
+import com.redpill_linpro.query_service.formatter.SparqlFormatter;
 import com.redpill_linpro.query_service.util.Vocabulary;
 import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
@@ -35,13 +37,25 @@ public class WebSocketHandler extends TextWebSocketHandler {
     }
 
     @Override
-    public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-        String payload = (String) new JSONObject(message.getPayload()).get("query");
-        QueryParser queryParser = new QueryParser(payload, voc);
-        for (String query : queryParser.getSparqlQueries()){
-            List<String> bindings = new ArrayList<>(RepositoryHandler.sendQuery(query));
-            for(String bind : bindings)
-                session.sendMessage(new TextMessage(bind));
+    public void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {
+        try {
+            String payload = (String) new JSONObject(message.getPayload()).get("query");
+            QueryParser queryParser = new QueryParser(payload, voc);
+            for (String query : queryParser.getSparqlQueries()) {
+                List<String> bindings = new ArrayList<>(RepositoryHandler.sendQuery(query));
+                if (query.contains("?rootLabel ?answerLabel")) {
+                    List<String> tuples = BindingFormatter.compressList(bindings);
+                    for (String tuple : tuples)
+                        session.sendMessage(new TextMessage(tuple));
+                } else {
+                    for (String bind : bindings) {
+                        session.sendMessage(new TextMessage(bind));
+                    }
+                }
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+            session.sendMessage(new TextMessage("Invalid question. Try again"));
         }
     }
 
