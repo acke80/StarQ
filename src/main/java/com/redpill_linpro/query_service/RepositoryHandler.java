@@ -27,8 +27,7 @@ public final class RepositoryHandler {
             String input = scanner.nextLine();
             repository = new HTTPRepository(repo + input);
         } else {
-            System.out.println("***** Already Connected *****");
-            System.out.println("Connected to: " + repository.toString());
+            System.out.println("***** Connected *****");
         }
     }
 
