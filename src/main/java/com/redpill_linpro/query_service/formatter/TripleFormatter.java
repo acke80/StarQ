@@ -130,22 +130,13 @@ public class TripleFormatter {
                 String object = triple.objectGloss();
 
                 if(subject.equals("thing")){
-
                     if(relation.equals("be") && object.contains(rootLabel)){
                         isCorrectTriples = true;
-
-                        if(object.contains("of"))
-                            relationWord = object.split(" of")[0];
-                        else if(object.contains("in"))
-                            relationWord = object.split(" in")[0];
-                        else if(object.contains("with"))
-                            relationWord = object.split(" with")[0];
-
-                    }else if(relation.equals("be"))
+                    }else if(relation.equals("be")) {
                         relationWord = object;
-
-                    else if(object.equals(rootLabel))
+                    }else if(object.equals(rootLabel)) {
                         isCorrectTriples = true;
+                    }
                 }
             }
 
@@ -179,13 +170,13 @@ public class TripleFormatter {
     /**Match the relation with a relation in the vocabulary.
      * If the relation is short for a real word, for example
      * 'desc' is short for description; the method will match
-     * description with desc.*/
+     * description with desc. Obs. only for ASCII chars. */
     private String getMatchedRelation(String relation){
         SentimentModel model =
                 SentimentModel.loadSerialized("edu/stanford/nlp/models/sentiment/sentiment.ser.gz");
 
         boolean wordsRecognize = false;
-        String[] relationSplit = relation.split(" ");
+        String[] relationSplit = relation.split("(?=\\p{Upper})");
 
         for(String s : relationSplit){
             wordsRecognize = model.wordVectors.containsKey(s);
@@ -195,43 +186,29 @@ public class TripleFormatter {
             }
         }
 
-        relation = relation.replace(" ", "").toLowerCase();
-        StringBuilder sb1, sb2;
+        String relationLemma = relation.replace(" ", "").toLowerCase();
+        String[] vocRelationSplit;
         String word1, word2;
-        boolean isPastUpperCase;
 
         for(String r : vocabularyRelations){
-            isPastUpperCase = false;
-            sb1 = new StringBuilder();
-            sb2 = new StringBuilder();
-
-            for(Character c : r.toCharArray()){
-                if(Character.isUpperCase(c))
-                    isPastUpperCase = true;
-
-                if(isPastUpperCase)
-                    sb2.append(c);
-                else
-                    sb1.append(c);
-            }
-
-            word1 = sb1.toString();
-            word2 = sb2.toString();
+            vocRelationSplit = r.split("(?=\\p{Upper})");
+            word1 = vocRelationSplit[0];
+            word2 = vocRelationSplit.length == 2 ? vocRelationSplit[1] : "";
 
             if(word2.equals("")) {
-                if (relation.equals(word1))
+                if (relationLemma.equals(word1))
                     return word1;
-                else if(wordsRecognize && relation.contains(word1))
+                else if(wordsRecognize && relationLemma.contains(word1))
                     return word1;
             }else {
                 if (wordsRecognize && word1.contains(relationSplit[0]) && word2.toLowerCase().contains(relationSplit[1]))
                     return word1 + word2;
-                else if(wordsRecognize && relation.contains(word1) && relation.contains(word2.toLowerCase()))
+                else if(wordsRecognize && relationLemma.contains(word1) && relationLemma.contains(word2.toLowerCase()))
                     return word1 + word2;
-                else if(relation.equals(word1 + word2.toLowerCase()))
+                else if(relationLemma.equals(word1 + word2.toLowerCase()))
                     return word1 + word2;
             }
         }
-        return relation;
+        return relationLemma;
     }
 }

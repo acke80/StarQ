@@ -93,17 +93,29 @@ public final class QueryParser {
 
     /** Generate Triples from the Statements. */
     private Collection<RelationTriple> generateTriples(List<CoreLabel> coreLabels){
-        StringBuilder sb = new StringBuilder();
         for(CoreLabel c : coreLabels)
             System.out.println(c.lemma() + " . " + c.tag());
-        for (int i = 0; i < coreLabels.size(); i++){
+
+        String formattedStatement = getFormattedRelationStatement(coreLabels);
+        statements.add(formattedStatement);
+        return new Sentence(formattedStatement).openieTriples();
+    }
+
+    /** Formats the relation nouns in the statement into one word.
+     * The relation can consist of two nouns, or start with an
+     * adjective followed by a noun. Alternative the second
+     * noun can be a NNS (plural). More info on:
+     * https://www.ling.upenn.edu/courses/Fall_2003/ling001/penn_treebank_pos.html*/
+    private String getFormattedRelationStatement(List<CoreLabel> coreLabels) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < coreLabels.size(); i++) {
             CoreLabel coreLabel = coreLabels.get(i);
 
-            if(!coreLabel.lemma().equals("thing") &&
-                    (coreLabel.tag().equals("NN") || coreLabel.tag().equals("JJ"))){
+            if (!coreLabel.lemma().equals("thing") &&
+                    (coreLabel.tag().equals("NN") || coreLabel.tag().equals("JJ"))) {
 
-                if(i+1 < coreLabels.size())
-                    if(coreLabels.get(i+1).tag().equals("NN") || coreLabels.get(i+1).tag().equals("JJ")){
+                if (i + 1 < coreLabels.size())
+                    if (coreLabels.get(i + 1).tag().equals("NN") || coreLabels.get(i + 1).tag().equals("NNS")) {
                         String camelCaseString = StringUtils.capitalize(coreLabels.get(++i).lemma());
                         sb.append(coreLabel.lemma()).append(camelCaseString).append(" ");
                         continue;
@@ -112,9 +124,7 @@ public final class QueryParser {
 
             sb.append(coreLabel.lemma()).append(" ");
         }
-
-        statements.add(sb.toString());
-        return new Sentence(sb.toString()).openieTriples();
+        return sb.toString();
     }
 
     /** Generate a Sparql Query for each sentence in the document. */
