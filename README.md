@@ -31,10 +31,12 @@ We used the movie script from the first Star Wars movie "A New Hope" to train th
 only recognize certain entities that appear frequently in the first movie, for example: Darth Vader, Tatooine, Han Solo etc.  
 
 ## Example Queries
-What height is Vader?  
-What is the orbital period of all the planets?  
-Who are the residents of Tatooine?  
-What is the description of all the characters?   
-What are the films with Han Solo?  
-What eye color does Luke have?  
-What is the terrain on Alderaan?  
+Questions does not need to end with a question mark.    
+&nbsp;&nbsp;&nbsp;&nbsp;What height is Vader?  
+&nbsp;&nbsp;&nbsp;&nbsp;What is the orbital period of all the planets?  
+&nbsp;&nbsp;&nbsp;&nbsp;Who are the residents of Tatooine?  
+&nbsp;&nbsp;&nbsp;&nbsp;What is the description of all the characters?   
+&nbsp;&nbsp;&nbsp;&nbsp;What are the films with Han Solo?  
+&nbsp;&nbsp;&nbsp;&nbsp;What eye color does Luke have?  
+&nbsp;&nbsp;&nbsp;&nbsp;What is the terrain on Alderaan?  
+&nbsp;&nbsp;&nbsp;&nbsp;What is the cost in credits for all the starships?
