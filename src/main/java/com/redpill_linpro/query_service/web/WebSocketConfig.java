@@ -1,6 +1,5 @@
 package com.redpill_linpro.query_service.web;
 
-import com.redpill_linpro.query_service.RepositoryHandler;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.*;
 

@@ -1,7 +1,6 @@
 package com.redpill_linpro.query_service.web;
 
-import com.redpill_linpro.query_service.QueryParser;
-import com.redpill_linpro.query_service.RepositoryHandler;
+import com.redpill_linpro.query_service.parser.QueryParser;
 import com.redpill_linpro.query_service.formatter.BindingFormatter;
 import com.redpill_linpro.query_service.util.Vocabulary;
 import org.json.JSONObject;
@@ -16,7 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.redpill_linpro.query_service.ApplicationProp.*;
+import static com.redpill_linpro.query_service.util.ApplicationProperties.*;
 
 @Controller
 public class WebSocketHandler extends TextWebSocketHandler {

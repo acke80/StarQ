@@ -102,7 +102,13 @@ public class TripleFormatter {
                     this.relation = "voc:" + getMatchedRelation(this.relation);
                     rootEntity = triple.objectGloss();
                     rootEntity = "voc:" + StringUtils.capitalize(rootEntity);
+                }else if(relation.contains("be") && (relation.contains("for"))){
+                    this.relation = relation.replace("be ", "").replace(" for", "");
+                    this.relation = "voc:" + getMatchedRelation(this.relation);
+                    rootEntity = triple.objectGloss();
+                    rootEntity = "voc:" + StringUtils.capitalize(rootEntity);
                 }
+
             }else{
                 if(relation.equals("be") || relation.equals("have")){
                     if(triple.subjectGloss().equals(rootLabel))
@@ -186,11 +192,15 @@ public class TripleFormatter {
             }
         }
 
+        System.out.println("RELATION:" + relation);
         String relationLemma = relation.replace(" ", "").toLowerCase();
         String[] vocRelationSplit;
         String word1, word2;
 
         for(String r : vocabularyRelations){
+            if(relationLemma.equals(r.toLowerCase())) // We get a direct match with vocabulary
+                return r;
+
             vocRelationSplit = r.split("(?=\\p{Upper})");
             word1 = vocRelationSplit[0];
             word2 = vocRelationSplit.length == 2 ? vocRelationSplit[1] : "";
@@ -200,7 +210,7 @@ public class TripleFormatter {
                     return word1;
                 else if(wordsRecognize && relationLemma.contains(word1))
                     return word1;
-            }else {
+            }else if(relationSplit.length == 2){
                 if (wordsRecognize && word1.contains(relationSplit[0]) && word2.toLowerCase().contains(relationSplit[1]))
                     return word1 + word2;
                 else if(wordsRecognize && relationLemma.contains(word1) && relationLemma.contains(word2.toLowerCase()))

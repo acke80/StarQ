@@ -8,7 +8,7 @@ import edu.stanford.nlp.util.StringUtils;
 import java.util.Properties;
 import java.util.Scanner;
 
-import static com.redpill_linpro.query_service.ApplicationProp.*;
+import static com.redpill_linpro.query_service.util.ApplicationProperties.*;
 
 public final class NerTrain {
 

@@ -1,6 +1,6 @@
 package com.redpill_linpro.query_service.util;
 
-import com.redpill_linpro.query_service.RepositoryHandler;
+import com.redpill_linpro.query_service.web.RepositoryHandler;
 import org.apache.jena.query.ParameterizedSparqlString;
 
 import java.util.ArrayList;

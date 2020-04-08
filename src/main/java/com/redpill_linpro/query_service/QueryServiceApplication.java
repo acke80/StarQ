@@ -1,9 +1,10 @@
 package com.redpill_linpro.query_service;
 
+import com.redpill_linpro.query_service.parser.QueryParser;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import static com.redpill_linpro.query_service.ApplicationProp.*;
+import static com.redpill_linpro.query_service.util.ApplicationProperties.*;
 
 @SpringBootApplication
 public class QueryServiceApplication {

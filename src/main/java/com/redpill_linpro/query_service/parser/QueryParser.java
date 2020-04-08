@@ -1,4 +1,4 @@
-package com.redpill_linpro.query_service;
+package com.redpill_linpro.query_service.parser;
 
 import com.redpill_linpro.query_service.formatter.SparqlFormatter;
 import com.redpill_linpro.query_service.formatter.TripleFormatter;
@@ -109,20 +109,40 @@ public final class QueryParser {
     private String getFormattedRelationStatement(List<CoreLabel> coreLabels) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < coreLabels.size(); i++) {
-            CoreLabel coreLabel = coreLabels.get(i);
+            CoreLabel iCoreLabel = coreLabels.get(i);
 
-            if (!coreLabel.lemma().equals("thing") &&
-                    (coreLabel.tag().equals("NN") || coreLabel.tag().equals("JJ"))) {
+            if (!iCoreLabel.lemma().equals("thing") &&
+                    (iCoreLabel.tag().equals("NN") || iCoreLabel.tag().equals("JJ"))) {
 
-                if (i + 1 < coreLabels.size())
-                    if (coreLabels.get(i + 1).tag().equals("NN") || coreLabels.get(i + 1).tag().equals("NNS")) {
-                        String camelCaseString = StringUtils.capitalize(coreLabels.get(++i).lemma());
-                        sb.append(coreLabel.lemma()).append(camelCaseString).append(" ");
+                StringBuilder nounCamelSb = new StringBuilder().append(iCoreLabel.lemma());
+                for(int j = i + 1; j < coreLabels.size(); j++){
+                    CoreLabel jCoreLabel = coreLabels.get(j);
+                    System.out.println("J: " + jCoreLabel.lemma());
+                    if(jCoreLabel.tag().equals("NN") || jCoreLabel.tag().equals("NNS")){
+                        nounCamelSb.append(StringUtils.capitalize(jCoreLabel.word()));
+                        i++;
+                        iCoreLabel.setLemma(nounCamelSb.toString());
                         continue;
                     }
+                    if(j + 1 < coreLabels.size()) {
+                        if (jCoreLabel.tag().equals("IN") &&
+                                (coreLabels.get(j + 1).tag().equals("NN") ||
+                                        coreLabels.get(j + 1).tag().equals("NNS"))) {
+                            nounCamelSb.append(StringUtils.capitalize(jCoreLabel.word())).
+                                        append(StringUtils.capitalize(coreLabels.get(j + 1).word()));
+                            j++;
+                            i+=2;
+                            iCoreLabel.setLemma(nounCamelSb.toString());
+                            continue;
+                        }
+                    }
+                    System.out.println("END J: " + jCoreLabel.lemma() + "  :" + nounCamelSb.toString());
+                    iCoreLabel.setLemma(nounCamelSb.toString());
+                    break;
+                }
             }
-
-            sb.append(coreLabel.lemma()).append(" ");
+            System.out.println("APPEND: " + iCoreLabel.lemma());
+            sb.append(iCoreLabel.lemma()).append(" ");
         }
         return sb.toString();
     }

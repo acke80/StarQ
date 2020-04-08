@@ -1,4 +1,4 @@
-package com.redpill_linpro.query_service;
+package com.redpill_linpro.query_service.web;
 
 import org.eclipse.rdf4j.query.*;
 import org.eclipse.rdf4j.repository.Repository;
@@ -8,9 +8,8 @@ import org.eclipse.rdf4j.repository.RepositoryConnection;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
-import static com.redpill_linpro.query_service.ApplicationProp.*;
+import static com.redpill_linpro.query_service.util.ApplicationProperties.*;
 
 public final class RepositoryHandler {
     private static RepositoryConnection connection = null;

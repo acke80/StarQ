@@ -1,15 +1,14 @@
-package com.redpill_linpro.query_service;
+package com.redpill_linpro.query_service.util;
 
-import com.redpill_linpro.query_service.util.FileHandler;
 import edu.stanford.nlp.util.StringUtils;
 
 
-public final class ApplicationProp {
+public final class ApplicationProperties {
 
     private static java.util.Properties properties =
             StringUtils.propFileToProperties(new FileHandler("application.properties").getPath());
 
-    private ApplicationProp(){
+    private ApplicationProperties(){
     }
 
     public static FileHandler getAppPropertyFile(String key){
