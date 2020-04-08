@@ -26,8 +26,15 @@ To use the Natural Language Interface, start the program and wait for it to load
 Go to [localhost:8080](localhost:8080) and you should be prompted to the web page.  
 If everything is working, the web page should say **Connected**.  
 
-The model has not been train on large amounts of data, so it will not recognize many Star Wars entities.  
+The model has not trained on large amounts of data, so it will not recognize many Star Wars entities.  
 We used the movie script from the first Star Wars movie "A New Hope" to train the model, which means the NLP will  
 only recognize certain entities that appear frequently in the first movie, for example: Darth Vader, Tatooine, Han Solo etc.  
 
 ## Example Queries
+What height is Vader?  
+What is the orbital period of all the planets?  
+Who are the residents of Tatooine?  
+What is the description of all the characters?   
+What are the films with Han Solo?  
+What eye color does Luke have?  
+What is the terrain on Alderaan?  
