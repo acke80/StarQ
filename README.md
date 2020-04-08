@@ -21,3 +21,13 @@
 * Add the following Java VM options: **-Xmx4g -Xms4g**
 
 
+## Using the NLI
+To use the Natural Language Interface, start the program and wait for it to load the properties and start the server.  
+Go to [localhost:8080](localhost:8080) and you should be prompted to the web page.  
+If everything is working, the web page should say **Connected**.  
+
+The model has not been train on large amounts of data, so it will not recognize many Star Wars entities.  
+We used the movie script from the first Star Wars movie "A New Hope" to train the model, which means the NLP will  
+only recognize certain entities that appear frequently in the first movie, for example: Darth Vader, Tatooine, Han Solo etc.  
+
+## Example Queries
