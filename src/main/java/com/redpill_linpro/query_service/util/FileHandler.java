@@ -23,6 +23,10 @@ public final class FileHandler {
         return data;
     }
 
+    public String getPath(){
+        return this.getClass().getClassLoader().getResource(dir).getPath();
+    }
+
     private String readFileData() throws IOException {
         StringBuilder contentBuilder = new StringBuilder();
         BufferedReader br = new BufferedReader(new InputStreamReader(
@@ -36,10 +40,6 @@ public final class FileHandler {
         br.close();
 
         return contentBuilder.toString();
-    }
-
-    public String getPath(){
-        return this.getClass().getClassLoader().getResource(dir).getPath();
     }
 
 }

@@ -10,26 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import static com.redpill_linpro.query_service.ApplicationProp.*;
+
 public final class RepositoryHandler {
     private static RepositoryConnection connection = null;
-    private static String repo = "http://localhost:7200/repositories/";
-    private static Repository repository;
+    private static Repository repository = new HTTPRepository(getAppProperty("repoURL"));
 
     private RepositoryHandler() { }
-
-    public static void repositoryConnection() {
-        if (connection == null) {
-            Scanner scanner = new Scanner(System.in);
-            System.out.print("*****************************************************************\n" +
-                    "Enter the name of the repository to connect to (not the whole URL)\n" +
-                    "*****************************************************************\n");
-
-            String input = scanner.nextLine();
-            repository = new HTTPRepository(repo + input);
-        } else {
-            System.out.println("***** Connected *****");
-        }
-    }
 
     /**
      * Sends a query to a SPARQL endpoint and returns the data asked for in the query

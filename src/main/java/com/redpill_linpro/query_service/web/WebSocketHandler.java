@@ -3,7 +3,6 @@ package com.redpill_linpro.query_service.web;
 import com.redpill_linpro.query_service.QueryParser;
 import com.redpill_linpro.query_service.RepositoryHandler;
 import com.redpill_linpro.query_service.formatter.BindingFormatter;
-import com.redpill_linpro.query_service.formatter.SparqlFormatter;
 import com.redpill_linpro.query_service.util.Vocabulary;
 import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
@@ -17,13 +16,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.redpill_linpro.query_service.ApplicationProp.*;
 
 @Controller
 public class WebSocketHandler extends TextWebSocketHandler {
 
     private static HashMap<WebSocketSession, Integer>
                     sessionMapper = new HashMap<>();
-    private static Vocabulary voc = new Vocabulary("https://swapi.co/vocabulary/");
+    private static Vocabulary voc = new Vocabulary(getAppProperty("vocabulary"));
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws IOException {
@@ -41,17 +41,18 @@ public class WebSocketHandler extends TextWebSocketHandler {
         try {
             String payload = (String) new JSONObject(message.getPayload()).get("query");
             QueryParser queryParser = new QueryParser(payload, voc);
+
             for (String query : queryParser.getSparqlQueries()) {
                 List<String> bindings = new ArrayList<>(RepositoryHandler.sendQuery(query));
+
                 if (query.contains("?rootLabel ?answerLabel")) {
                     List<String> tuples = BindingFormatter.compressList(bindings);
                     for (String tuple : tuples)
                         session.sendMessage(new TextMessage(tuple));
-                } else {
-                    for (String bind : bindings) {
+                }else
+                    for (String bind : bindings)
                         session.sendMessage(new TextMessage(bind));
-                    }
-                }
+
             }
         } catch(Exception e) {
             e.printStackTrace();

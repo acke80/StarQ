@@ -1,6 +1,5 @@
 package com.redpill_linpro.query_service;
 
-import com.redpill_linpro.query_service.util.FileHandler;
 import edu.stanford.nlp.ie.crf.CRFClassifier;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.sequences.SeqClassifierFlags;
@@ -9,11 +8,9 @@ import edu.stanford.nlp.util.StringUtils;
 import java.util.Properties;
 import java.util.Scanner;
 
-public final class NerTrain {
+import static com.redpill_linpro.query_service.ApplicationProp.*;
 
-    public static FileHandler propertiesFile = new FileHandler("properties/roth.properties");
-    public static FileHandler modelFile = new FileHandler("models/modelStarWars.ser");
-    public static FileHandler trainFile = new FileHandler("trainingData/trainingDataStarWars.txt");
+public final class NerTrain {
 
     private static boolean running;
 
@@ -25,17 +22,18 @@ public final class NerTrain {
         String input;
 
         while(running){
-            System.out.println("model:        " + modelFile.getPath());
-            System.out.println("properties:   " + propertiesFile.getPath());
-            System.out.println("trainingData: " + trainFile.getPath());
+            System.out.println("model:        " + getAppPropertyFile("model").getPath());
+            System.out.println("properties:   " + getAppPropertyFile("trainProp").getPath());
+            System.out.println("trainingData: " + getAppPropertyFile("trainingData").getPath());
             System.out.println("Type 'train' to train the model");
             input = scanner.nextLine();
 
             if(input.equals("train")){
                 train(
-                        modelFile.getPath(),
-                        propertiesFile.getPath(),
-                        trainFile.getPath());
+                        getAppPropertyFile("model").getPath(),
+                        getAppPropertyFile("trainProp").getPath(),
+                        getAppPropertyFile("trainingData").getPath());
+
                 System.out.println("\nTraining Successful");
             }else if(input.equals("exit"))
                 break;
@@ -57,10 +55,6 @@ public final class NerTrain {
         CRFClassifier<CoreLabel> crf = new CRFClassifier<>(flags);
         crf.train();
         crf.serializeClassifier(modelPath);
-    }
-
-    private static CRFClassifier getModel(String modelPath) {
-        return CRFClassifier.getClassifierNoExceptions(modelPath);
     }
 
     public static void main(String[] args){

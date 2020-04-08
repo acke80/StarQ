@@ -31,7 +31,6 @@ public final class Vocabulary {
      * retrieving all the relations. */
     private void generateVocabulary(){
         List<String> uriRelations = new ArrayList<>();
-        RepositoryHandler.repositoryConnection();
         try{
              uriRelations = RepositoryHandler.sendQuery(QUERY);
         } catch(Exception e){
