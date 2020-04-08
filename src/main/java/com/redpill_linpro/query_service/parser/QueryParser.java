@@ -117,11 +117,11 @@ public final class QueryParser {
                 StringBuilder nounCamelSb = new StringBuilder().append(iCoreLabel.lemma());
                 for(int j = i + 1; j < coreLabels.size(); j++){
                     CoreLabel jCoreLabel = coreLabels.get(j);
-                    System.out.println("J: " + jCoreLabel.lemma());
+
                     if(jCoreLabel.tag().equals("NN") || jCoreLabel.tag().equals("NNS")){
                         nounCamelSb.append(StringUtils.capitalize(jCoreLabel.word()));
-                        i++;
                         iCoreLabel.setLemma(nounCamelSb.toString());
+                        i++;
                         continue;
                     }
                     if(j + 1 < coreLabels.size()) {
@@ -130,18 +130,15 @@ public final class QueryParser {
                                         coreLabels.get(j + 1).tag().equals("NNS"))) {
                             nounCamelSb.append(StringUtils.capitalize(jCoreLabel.word())).
                                         append(StringUtils.capitalize(coreLabels.get(j + 1).word()));
+                            iCoreLabel.setLemma(nounCamelSb.toString());
                             j++;
                             i+=2;
-                            iCoreLabel.setLemma(nounCamelSb.toString());
                             continue;
                         }
                     }
-                    System.out.println("END J: " + jCoreLabel.lemma() + "  :" + nounCamelSb.toString());
-                    iCoreLabel.setLemma(nounCamelSb.toString());
                     break;
                 }
             }
-            System.out.println("APPEND: " + iCoreLabel.lemma());
             sb.append(iCoreLabel.lemma()).append(" ");
         }
         return sb.toString();
