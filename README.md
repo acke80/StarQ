@@ -11,7 +11,13 @@
 * Give the Repository an ID, and set Ruleset to "No inference".
 * Now, go to Import-RDF and "Upload RDF files", and choose the "data.ttl", and click Import.
 
-### 2. Setup 
+### 2. Setup Application Properties
+* In the project go to resources/application.properties.
+* Change the repoURL to http://localhost:7200/repositories/REPO_ID, where REPO_ID is the name of your repository.
+* All the other properties are set by default to work with the Star Wars repository.
 
+### 3. Setup VM Options
+* The program needs atleast 4Gb of memory to run. This is due to the amount of CoreNLP annotators loaded into the pipeline.
+* Add the following Java VM options: **-Xmx4g -Xms4g**
 
 
