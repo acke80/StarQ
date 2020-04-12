@@ -96,23 +96,26 @@ public final class QueryParser {
         for(CoreLabel c : coreLabels)
             System.out.println(c.lemma() + " . " + c.tag());
 
-        String formattedStatement = getFormattedRelationStatement(coreLabels);
+        String formattedStatement = getPredicateConcat(coreLabels);
         statements.add(formattedStatement);
         return new Sentence(formattedStatement).openieTriples();
     }
 
-    /** Formats the relation nouns in the statement into one word.
-     * The relation can consist of two nouns, or start with an
-     * adjective followed by a noun. Alternative the second
-     * noun can be a NNS (plural). More info on:
+    /** Concat the predicate in the statement into one word.
+     * The predicate can for example consist of two nouns,
+     * or start with an adjective followed by a noun.
+     * Alternatively the second noun can be a NNS (plural) etc.
+     * More info on:
      * https://www.ling.upenn.edu/courses/Fall_2003/ling001/penn_treebank_pos.html*/
-    private String getFormattedRelationStatement(List<CoreLabel> coreLabels) {
+    private String getPredicateConcat(List<CoreLabel> coreLabels) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < coreLabels.size(); i++) {
             CoreLabel iCoreLabel = coreLabels.get(i);
 
             if (!iCoreLabel.lemma().equals("thing") &&
-                    (iCoreLabel.tag().equals("NN") || iCoreLabel.tag().equals("JJ"))) {
+                    (iCoreLabel.tag().equals("NNS")
+                            || iCoreLabel.tag().equals("NN")
+                            || iCoreLabel.tag().equals("JJ"))) {
 
                 StringBuilder nounCamelSb = new StringBuilder().append(iCoreLabel.lemma());
                 for(int j = i + 1; j < coreLabels.size(); j++){

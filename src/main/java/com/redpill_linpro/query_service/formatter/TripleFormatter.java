@@ -181,44 +181,37 @@ public class TripleFormatter {
         SentimentModel model =
                 SentimentModel.loadSerialized("edu/stanford/nlp/models/sentiment/sentiment.ser.gz");
 
-        boolean wordsRecognize = false;
-        String[] relationSplit = relation.split("(?=\\p{Upper})");
+        String[] relationSplits = relation.split("(?=\\p{Upper})");
+        String[] vocRelationSplits;
+        boolean isMatch;
 
-        for(String s : relationSplit){
-            wordsRecognize = model.wordVectors.containsKey(s);
-            if(!model.wordVectors.containsKey(s)) {
-                wordsRecognize = false;
-                break;
+        for(String vocRelation : vocabularyRelations){
+            if(relation.toLowerCase().equals(vocRelation.toLowerCase()))
+                return vocRelation;
+
+            isMatch = true;
+            int i = 0;
+            String relationSplit;
+            vocRelationSplits = vocRelation.split("(?=\\p{Upper})");
+            for(String vocRelationSplit : vocRelationSplits){
+                if(!isMatch) break;
+
+                relationSplit = relationSplits[i].toLowerCase();
+                vocRelationSplit = vocRelationSplit.toLowerCase();
+                if(model.wordVectors.containsKey(relationSplit))
+                    isMatch = relationSplit.contains(vocRelationSplit)
+                            || vocRelationSplit.contains(relationSplit);
+                else
+                    isMatch = relationSplit.equals(vocRelationSplit);
+
+                if(relationSplits.length <= ++i)
+                    break;
             }
+
+            if(isMatch)
+                return vocRelation;
+
         }
-
-        System.out.println("RELATION:" + relation);
-        String relationLemma = relation.replace(" ", "").toLowerCase();
-        String[] vocRelationSplit;
-        String word1, word2;
-
-        for(String r : vocabularyRelations){
-            if(relationLemma.equals(r.toLowerCase())) // We get a direct match with vocabulary
-                return r;
-
-            vocRelationSplit = r.split("(?=\\p{Upper})");
-            word1 = vocRelationSplit[0];
-            word2 = vocRelationSplit.length == 2 ? vocRelationSplit[1] : "";
-
-            if(word2.equals("")) {
-                if (relationLemma.equals(word1))
-                    return word1;
-                else if(wordsRecognize && relationLemma.contains(word1))
-                    return word1;
-            }else if(relationSplit.length == 2){
-                if (wordsRecognize && word1.contains(relationSplit[0]) && word2.toLowerCase().contains(relationSplit[1]))
-                    return word1 + word2;
-                else if(wordsRecognize && relationLemma.contains(word1) && relationLemma.contains(word2.toLowerCase()))
-                    return word1 + word2;
-                else if(relationLemma.equals(word1 + word2.toLowerCase()))
-                    return word1 + word2;
-            }
-        }
-        return relationLemma;
+        return relation;
     }
 }

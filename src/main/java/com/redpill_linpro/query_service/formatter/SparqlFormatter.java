@@ -64,9 +64,6 @@ public class SparqlFormatter {
     }
 
     private boolean isLastTriple(SimpleTriple currentTriple) {
-        if (simpleTriples.get(simpleTriples.size() - 1) == currentTriple)
-            return true;
-        else
-            return false;
+        return simpleTriples.get(simpleTriples.size() - 1) == currentTriple;
     }
 }
