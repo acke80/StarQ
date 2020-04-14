@@ -7,8 +7,6 @@ import edu.stanford.nlp.ie.util.RelationTriple;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.sentiment.SentimentModel;
 import edu.stanford.nlp.util.StringUtils;
-import org.eclipse.jetty.util.StringUtil;
-import org.mapdb.Atomic;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -44,12 +42,6 @@ public class TripleFormatter {
 
         for(SimpleTriple s : formattedTriples)
             System.out.println(s.SUBJECT+" "+s.RELATION+" "+s.OBJECT);
-    }
-
-    /** Checks if the Entity type has the relation in the repository.
-     * @return false if no triples exist in the repository, else true. */
-    public boolean checkValidEntityRelation(String entity, String relation){
-        return true;
     }
 
     public List<SimpleTriple> getFormattedTriples(){
