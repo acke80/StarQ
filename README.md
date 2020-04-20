@@ -1,4 +1,5 @@
-# queryservice
+# StarQ
+## A Natural Language Interface for Querying Linked Data
 
 ## Setup
 
